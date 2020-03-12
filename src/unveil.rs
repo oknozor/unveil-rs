@@ -1,6 +1,6 @@
 use anyhow::Result;
 use std::fs;
-use std::fs::File;
+use std::fs::{File, OpenOptions};
 use std::io::{Read, Write};
 use pulldown_cmark::{Parser, html, Options};
 
@@ -24,6 +24,7 @@ pub struct UnveilProject {
 impl Default for UnveilProject {
     fn default() -> Self {
         UnveilProject {
+            // TODO: handle this correctly and use it!
             root: PathBuf::from("."),
             markdown: vec![],
             livereload: true
@@ -160,8 +161,25 @@ impl UnveilProject {
         Ok(())
     }
 
-    pub fn new_slide(&mut self, _: &str) -> Result<()> {
-        unimplemented!()
+    pub fn new_slide(&mut self, name: &str) -> Result<()> {
+        let filename = if name.ends_with(".md") {
+            name.into()
+        } else {
+            format!("{}.md", name)
+        };
+
+        let mut path = PathBuf::from("slides");
+        path.push(&filename);
+
+        let mut config = UnveilConfig::from_disk("unveil.toml")?;
+
+        File::create(path).map(|_| ())?;
+        config.slides.push(filename);
+
+        let mut file = OpenOptions::new().write(true).create(true).open("unveil.toml")?;
+
+        file.write_all(toml::to_string(&config)?.as_bytes())
+            .map_err(|err| anyhow!("Error writing to unveil.toml : {}", err))
     }
 
     pub fn serve(&mut self, port: Option<i32>) -> Result<()> {
