@@ -2,12 +2,6 @@ use clap::{App, Arg, SubCommand};
 use unveil_rs::unveil::UnveilProject;
 
 fn main() {
-    // TODO : clap
-    // - init
-    // - build (project.build())
-    // - run (actix) + watch ???
-    // - --new-slide
-
     let matches = App::new("Unveil.rs")
         .version("1.0")
         .author("Paul D. <paul.delafosse@protonmail.com>")
