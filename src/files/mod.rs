@@ -4,6 +4,11 @@ use std::fs::File;
 use std::io::{Read, Write};
 use pulldown_cmark::{Parser, html, Options};
 
+
+use horrorshow::prelude::*;
+use horrorshow::helper::doctype;
+
+
 pub struct UnveilProject {
     pub markdown: Vec<String>
 }
@@ -26,16 +31,40 @@ impl UnveilProject {
     }
 
     fn to_html(&self) -> String {
-        let mut res = String::new();
+        let mut sections = String::new();
 
-        self.markdown.iter()
-            .for_each(|str| res.push_str(str));
+        let inner = self.markdown.iter()
+            .map(|str| {
+                let mut options = Options::empty();
+                let parser = Parser::new_ext(&str, options);
+                let mut buffer = String::new();
+                html::push_html(&mut buffer, parser);
 
-        let mut options = Options::empty();
-        let parser = Parser::new_ext(&res, options);
-        let mut buffer = String::new();
-        html::push_html(&mut buffer, parser);
-        buffer
+                buffer
+            }).for_each(|html| {
+            let section = format!("{}",
+                                  html! {
+                        section {
+                            : Raw(&html)
+                        }
+                    });
+            sections.push_str(&section);
+        });
+
+        let html = html! {
+            : doctype::HTML;
+            html {
+                head {
+                    Raw("<meta charset=\"utf-8\" />")
+                    title : "Unveil";
+                }
+                body {
+                   : Raw(&sections)
+                }
+            }
+        };
+
+        format!("{}", html)
     }
 
     pub fn build(&mut self) -> Result<()> {
