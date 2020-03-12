@@ -7,6 +7,7 @@ use pulldown_cmark::{Parser, html, Options};
 
 use horrorshow::prelude::*;
 use horrorshow::helper::doctype;
+use crate::config::UnveilCommon;
 
 
 pub struct UnveilProject {
@@ -14,6 +15,7 @@ pub struct UnveilProject {
 }
 
 impl UnveilProject {
+    /// get the markdown pages as strings
     fn get_dir_files(&mut self) -> Result<()> {
         let mut markdown_contents = vec![];
 
@@ -30,35 +32,22 @@ impl UnveilProject {
         Ok(())
     }
 
+    /// build the main html page
     fn to_html(&self) -> String {
-        let mut sections = String::new();
-
-        let inner = self.markdown.iter()
-            .map(|str| {
-                let mut options = Options::empty();
-                let parser = Parser::new_ext(&str, options);
-                let mut buffer = String::new();
-                html::push_html(&mut buffer, parser);
-
-                buffer
-            }).for_each(|html| {
-            let section = format!("{}",
-                                  html! {
-                        section {
-                            : Raw(&html)
-                        }
-                    });
-            sections.push_str(&section);
-        });
+        let sections = self.markdown_to_html_sections();
 
         let html = html! {
             : doctype::HTML;
-            html {
+            html(lang="EN") {
                 head {
-                    Raw("<meta charset=\"utf-8\" />")
+                    meta(charset="utf8");
                     title : "Unveil";
+                    link(rel="stylesheet", href="unveil.css");
+                    script(src="unveil.js");
                 }
-                body {
+                body(onscroll="scroll_changed()") {
+                   button(onclick="next_slide_left()", class="arrow-left");
+                   button(onclick="next_slide_right()", class="arrow-right");
                    : Raw(&sections)
                 }
             }
@@ -67,8 +56,32 @@ impl UnveilProject {
         format!("{}", html)
     }
 
+    /// convert each markdown pages to html
+    fn markdown_to_html_sections(&self) -> String {
+        let mut sections = String::new();
+        self.markdown.iter().enumerate()
+            .map(|(idx, str), | {
+                let parser = Parser::new_ext(&str, Options::empty());
+                let mut buffer = String::new();
+                html::push_html(&mut buffer, parser);
+
+                (idx, buffer)
+            })
+            .for_each(|(idx, html)| {
+                let idx = &format!("unveil-slide-{}", idx);
+                sections.push_str(&format!("{}", html! {
+                    section(class=idx) { article { : Raw(&html) } }
+                }));
+            });
+
+        sections
+    }
+
+
     pub fn build(&mut self) -> Result<()> {
         self.get_dir_files()?;
+        let common = UnveilCommon::default();
+
         let html = self.to_html();
         std::fs::create_dir("public")?;
         let mut file = File::create("public/index.html")?;

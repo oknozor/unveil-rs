@@ -10,3 +10,9 @@ edition = "2018"
 pulldown-cmark = "0.7.0"
 anyhow = "1.0.26"
 horrorshow = "0.8.1"
+dirs = "2.0"
+
+[[bin]]
+name = "unveil"
+path = "src/main.rs"
+
