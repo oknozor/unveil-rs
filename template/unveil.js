@@ -31,10 +31,5 @@ function next_slide_left() {
 }
 
 function scroll_changed() {
-    next_color();
-    window.document.body.style.background = current_bg;
-}
-
-function next_color() {
-    current_bg = current_bg === "blue" ? "red" : "blue";
+    // TODO
 }
