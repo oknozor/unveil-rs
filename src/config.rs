@@ -8,8 +8,8 @@ use std::io::Read;
 pub struct UnveilConfig {
     name: String,
     language: String,
-    slides: Vec<String>,
-    user_theme: Option<String>,
+    pub slides: Vec<String>,
+    pub user_theme: Option<String>,
 }
 
 impl Default for UnveilConfig {

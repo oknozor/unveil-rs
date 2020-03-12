@@ -35,16 +35,18 @@ impl UnveilProject {
     /// get markdowns slides as strings
     fn get_dir_files(&mut self) -> Result<()> {
         let mut markdown_contents = vec![];
+        let config = UnveilConfig::from_disk("unveil.toml")?;
 
-        for entry in fs::read_dir("slides")? {
-            let dir = entry?;
-            if dir.file_type()?.is_file() {
-                let mut file = File::open(dir.path())?;
-                let mut contents = String::new();
-                file.read_to_string(&mut contents)?;
-                markdown_contents.push(contents);
-            }
+        // Read slide names from config and lookup the corresponding slide in the
+        // slides directory, this allow to order slides rendering
+        for slide_name in config.slides.iter() {
+            let path = PathBuf::from(&format!("slides/{}", slide_name));
+            let mut file = File::open(path)?;
+            let mut contents = String::new();
+            file.read_to_string(&mut contents)?;
+            markdown_contents.push(contents);
         }
+
         self.markdown = markdown_contents;
         Ok(())
     }
