@@ -6,13 +6,29 @@ edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[[bin]]
+name = "unveil"
+path = "src/main.rs"
+
+[features]
+default = ["unveil-cli"]
+unveil-cli = [ "clap"]
+
 [dependencies]
 pulldown-cmark = "0.7.0"
 anyhow = "1.0.26"
 horrorshow = "0.8.1"
 dirs = "2.0"
+toml = "0.5.6"
+serde_derive = "^1.0"
+serde = "^1.0"
+iron = "0.6.1"
+notify = "4.0.15"
+open = "1.4.0"
+staticfile = "0.5.0"
+ws = "0.9.1"
 
-[[bin]]
-name = "unveil"
-path = "src/main.rs"
+# Cli
+clap = { version = "2.33.0", optional = true }
+
 

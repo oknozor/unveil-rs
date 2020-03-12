@@ -1,35 +1,46 @@
-use std::path::PathBuf;
-use anyhow::Result;
-use std::fs;
+use std::str::FromStr;
+use anyhow::{Error, Result};
+use std::path::Path;
+use std::fs::File;
+use std::io::Read;
 
-// Do we actually need this ?
-// static file are duplicated (in memory + in config)
-// Having the default config in XDG_CONFIG allow user modification of the default theme
-// In memory static content allow to
-//      - reset to the default config
-//      - init the default config without a http call
-pub struct UnveilCommon {
-    js_contents: String,
-    css_contents: String,
+#[derive(Serialize, Deserialize)]
+pub struct UnveilConfig {
+    name: String,
+    language: String,
+    slides: Vec<String>,
+    user_theme: Option<String>,
 }
 
-impl UnveilCommon {
-    pub fn default() -> Result<Self> {
-        let mut unveil_css_path: PathBuf = dirs::config_dir()
-            .unwrap_or_else(|| panic!("Could not resolve config dir"));
+impl Default for UnveilConfig {
+    fn default() -> Self {
+        UnveilConfig {
+            name: "unveil".to_string(),
+            language: "EN".to_string(),
+            slides: vec![
+                "landing.md".into(),
+                "slide.md".into(),
+            ],
+            user_theme: None
+        }
+    }
+}
 
-        unveil_css_path.push("unveil");
-        unveil_css_path.push("unveil.css");
+impl FromStr for UnveilConfig {
+    type Err = Error;
 
-        let mut unveil_js_path: PathBuf = dirs::config_dir()
-            .unwrap_or_else(|| panic!("Could not resolve config dir"));
+    /// Load a `Config` from some string.
+    fn from_str(src: &str) -> Result<Self> {
+        let toml = toml::from_str(src).expect("Error loading config");
+        Ok(toml)
+    }
+}
 
-        unveil_js_path.push("unveil");
-        unveil_js_path.push("unveil.js");
+impl UnveilConfig {
+    pub fn from_disk<P: AsRef<Path>>(config_file: P) -> Result<UnveilConfig> {
+        let mut buffer = String::new();
+        File::open(config_file)?.read_to_string(&mut buffer)?;
 
-        let css_contents = fs::read_to_string(unveil_css_path)?;
-        let js_contents = fs::read_to_string(unveil_js_path)?;
-
-        Ok(UnveilCommon { js_contents, css_contents })
+        UnveilConfig::from_str(&buffer)
     }
 }

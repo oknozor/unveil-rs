@@ -1,6 +1,9 @@
 #[macro_use]
 extern crate horrorshow;
+#[macro_use]
+extern crate serde_derive;
 
 pub mod unveil;
-pub mod config;
+pub mod watcher;
 pub mod generated;
+pub mod config;
