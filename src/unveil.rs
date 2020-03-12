@@ -1,19 +1,33 @@
 use anyhow::Result;
-use std::fs;
-use std::fs::{File, OpenOptions};
-use std::io::{Read, Write};
-use pulldown_cmark::{Parser, html, Options};
+use pulldown_cmark::{html, Options, Parser};
+use std::{
+    fs,
+    fs::{File, OpenOptions},
+    io::{Read, Write},
+};
 
-use horrorshow::prelude::*;
-use horrorshow::helper::doctype;
-use crate::config::UnveilConfig;
-use crate::generated::{CSS, JS, LANDING, SLIDE_EXAMPLE, LIVERELOAD_JS};
-use std::path::{Path, PathBuf};
-use iron::headers;
-use iron::{Iron, Chain, AfterMiddleware, Request, IronError, IronResult, Response, status, Set};
-use std::ffi::OsStr;
-use crate::watcher;
-
+use crate::{
+    config::UnveilConfig,
+    generated::{CSS, JS, LANDING, LIVERELOAD_JS, SLIDE_EXAMPLE},
+    watcher,
+};
+use horrorshow::{helper::doctype, prelude::*};
+use iron::{
+    headers,
+    status,
+    AfterMiddleware,
+    Chain,
+    Iron,
+    IronError,
+    IronResult,
+    Request,
+    Response,
+    Set,
+};
+use std::{
+    ffi::OsStr,
+    path::{Path, PathBuf},
+};
 
 pub struct UnveilProject {
     pub root: PathBuf,
@@ -27,7 +41,7 @@ impl Default for UnveilProject {
             // TODO: handle this correctly and use it!
             root: PathBuf::from("."),
             markdown: vec![],
-            livereload: true
+            livereload: true,
         }
     }
 }
@@ -84,8 +98,10 @@ impl UnveilProject {
     /// Convert each markdown pages to html
     fn markdown_to_html_sections(&self) -> String {
         let mut sections = String::new();
-        self.markdown.iter().enumerate()
-            .map(|(idx, str), | {
+        self.markdown
+            .iter()
+            .enumerate()
+            .map(|(idx, str)| {
                 let parser = Parser::new_ext(&str, Options::empty());
                 let mut buffer = String::new();
                 html::push_html(&mut buffer, parser);
@@ -94,18 +110,19 @@ impl UnveilProject {
             })
             .for_each(|(idx, html)| {
                 let idx = &format!("unveil-slide-{}", idx);
-                sections.push_str(&format!("{}", html! {
-                    section(id=idx) { article { : Raw(&html) } }
-                }));
+                sections.push_str(&format!(
+                    "{}",
+                    html! {
+                        section(id=idx) { article { : Raw(&html) } }
+                    }
+                ));
             });
 
         sections
     }
 
-
     /// Build a static file from the markdown content located in `slides/`
     pub fn build(&mut self) -> Result<()> {
-
         // Generate html from markdown files in
         self.get_dir_files()?;
         let html = self.to_html();
@@ -136,7 +153,10 @@ impl UnveilProject {
     }
 
     /// Initialize a template project
-    pub fn init(&mut self, project_name: Option<&str>) -> Result<()> {
+    pub fn init(
+        &mut self,
+        project_name: Option<&str>,
+    ) -> Result<()> {
         let project_name = if let Some(project_name) = project_name {
             project_name
         } else {
@@ -161,7 +181,10 @@ impl UnveilProject {
         Ok(())
     }
 
-    pub fn new_slide(&mut self, name: &str) -> Result<()> {
+    pub fn new_slide(
+        &mut self,
+        name: &str,
+    ) -> Result<()> {
         let filename = if name.ends_with(".md") {
             name.into()
         } else {
@@ -176,31 +199,37 @@ impl UnveilProject {
         File::create(path).map(|_| ())?;
         config.slides.push(filename);
 
-        let mut file = OpenOptions::new().write(true).create(true).open("unveil.toml")?;
+        let mut file = OpenOptions::new()
+            .write(true)
+            .create(true)
+            .open("unveil.toml")?;
 
         file.write_all(toml::to_string(&config)?.as_bytes())
             .map_err(|err| anyhow!("Error writing to unveil.toml : {}", err))
     }
 
-    pub fn serve(&mut self, port: Option<i32>) -> Result<()> {
+    pub fn serve(
+        &mut self,
+        port: Option<i32>,
+    ) -> Result<()> {
         let address = match port {
             Some(port) => format!("localhost:{}", port),
-            None => "localhost:7878".into()
+            None => "localhost:7878".into(),
         };
 
         let mut chain = Chain::new(staticfile::Static::new(PathBuf::from("public/")));
 
         chain.link_after(NoCache);
         chain.link_after(ErrorRecover);
-        let _iron = Iron::new(chain)
-            .http(&*address)?;
+        let _iron = Iron::new(chain).http(&*address)?;
 
-        let ws_server =
-            ws::WebSocket::new(|_| |_| Ok(()))?;
+        let ws_server = ws::WebSocket::new(|_| |_| Ok(()))?;
 
         let broadcaster = ws_server.broadcaster();
         std::thread::spawn(move || {
-            ws_server.listen("127.0.0.1:3000").expect("Error Opening websocket");
+            ws_server
+                .listen("127.0.0.1:3000")
+                .expect("Error Opening websocket");
         });
 
         let serving_url = format!("http://{}", address);
@@ -217,7 +246,7 @@ impl UnveilProject {
         for entry in entries {
             let entry = entry?;
             paths.push(entry.path());
-        };
+        }
 
         watcher::trigger_on_change(|paths| {
             println!("Files changed: {:?}", paths);
@@ -242,7 +271,11 @@ struct ErrorRecover;
 struct NoCache;
 
 impl AfterMiddleware for NoCache {
-    fn after(&self, _: &mut Request, mut res: Response) -> IronResult<Response> {
+    fn after(
+        &self,
+        _: &mut Request,
+        mut res: Response,
+    ) -> IronResult<Response> {
         res.headers.set(headers::CacheControl(vec![
             headers::CacheDirective::NoStore,
             headers::CacheDirective::MaxAge(0u32),
@@ -253,7 +286,11 @@ impl AfterMiddleware for NoCache {
 }
 
 impl AfterMiddleware for ErrorRecover {
-    fn catch(&self, _: &mut Request, err: IronError) -> IronResult<Response> {
+    fn catch(
+        &self,
+        _: &mut Request,
+        err: IronError,
+    ) -> IronResult<Response> {
         match err.response.status {
             // each error will result in 404 response
             Some(_) => Ok(err.response.set(status::NotFound)),

@@ -1,15 +1,11 @@
-use std::sync::mpsc::channel;
 use notify::Watcher;
-use std::time::Duration;
-use std::path::PathBuf;
-use std::thread::sleep;
+use std::{path::PathBuf, sync::mpsc::channel, thread::sleep, time::Duration};
 
 pub fn trigger_on_change<F>(closure: F)
-    where
-        F: Fn(Vec<PathBuf>),
+where
+    F: Fn(Vec<PathBuf>),
 {
-    use notify::DebouncedEvent::*;
-    use notify::RecursiveMode::*;
+    use notify::{DebouncedEvent::*, RecursiveMode::*};
 
     // Create a channel to receive the events.
     let (tx, rx) = channel();

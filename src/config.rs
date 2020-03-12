@@ -1,8 +1,5 @@
-use std::str::FromStr;
 use anyhow::{Error, Result};
-use std::path::Path;
-use std::fs::File;
-use std::io::Read;
+use std::{fs::File, io::Read, path::Path, str::FromStr};
 
 #[derive(Serialize, Deserialize)]
 pub struct UnveilConfig {
@@ -17,11 +14,8 @@ impl Default for UnveilConfig {
         UnveilConfig {
             name: "unveil".to_string(),
             language: "EN".to_string(),
-            slides: vec![
-                "landing.md".into(),
-                "slide.md".into(),
-            ],
-            user_theme: None
+            slides: vec!["landing.md".into(), "slide.md".into()],
+            user_theme: None,
         }
     }
 }

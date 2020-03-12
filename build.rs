@@ -1,7 +1,7 @@
-use std::fs;
-use std::fs::File;
-use std::io::Write;
+use std::{fs, fs::File, io::Write};
 
+// default static files are generated from in memory constants,
+// this might not be the best solution but it will do for now
 fn main() {
     let js_content = fs::read_to_string("template/unveil.js").unwrap();
     let css_content = fs::read_to_string("template/unveil.css").unwrap();
@@ -18,7 +18,11 @@ fn main() {
     let mut const_rile = File::create("src/generated.rs").unwrap();
     const_rile.write_all(js_const.as_bytes()).unwrap();
     const_rile.write_all(css_const.as_bytes()).unwrap();
-    const_rile.write_all(landing_slide_const.as_bytes()).unwrap();
-    const_rile.write_all(example_slide_const.as_bytes()).unwrap();
+    const_rile
+        .write_all(landing_slide_const.as_bytes())
+        .unwrap();
+    const_rile
+        .write_all(example_slide_const.as_bytes())
+        .unwrap();
     const_rile.write_all(livereload_const.as_bytes()).unwrap();
 }
