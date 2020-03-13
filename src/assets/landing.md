@@ -1,5 +1,6 @@
 # Welcome to Unveil-rs 
 
-1. Add some markdown slides the `slides/`
+## Getting started
+1. Init with `unveil init`
 2. Build with `unveil build`
 3. Serve with `unveil serve`

@@ -1,9 +1,17 @@
 let current_slide = 0;
-let current_bg = "blue";
 
+hljs.configure({
+    tabReplace: '    ',
+});
+
+window.onload = () => {
+    Array
+        .from(document.querySelectorAll('code'))
+        .forEach( block =>  hljs.highlightBlock(block));
+};
 
 window.document.addEventListener("keydown", e => {
-    if(e.key === "ArrowLeft") {
+    if (e.key === "ArrowLeft") {
         next_slide_left();
     } else if (e.key === "ArrowRight") {
         next_slide_right();
@@ -28,8 +36,4 @@ function next_slide_left() {
         let slide = get_slide(current_slide);
         slide.scrollIntoView(true);
     }
-}
-
-function scroll_changed() {
-    // TODO
 }

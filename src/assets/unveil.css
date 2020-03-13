@@ -30,7 +30,7 @@ article h2 {
     margin-left: 0.5em;
 }
 
-article :not(h1) :not(h2) {
+p, ul, ol {
     margin-left: 1em;
 }
 
@@ -38,6 +38,8 @@ article {
     justify-content: center;
     align-items: center;
 }
+
+p, li > code.hljs { display: inline; }
 
 .arrow-left {
     position: fixed;

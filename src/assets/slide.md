@@ -1,3 +1,8 @@
 # This is the second slide
 
-You can add ass much ass you want ! 
+Unveil as hljs support : 
+```rust
+fn main() {
+    println!("hello rustaceans 🦀!");
+}
+```

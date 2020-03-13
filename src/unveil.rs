@@ -78,15 +78,15 @@ impl UnveilProject {
                     title : "Unveil";
                     link(rel="stylesheet", href="unveil.css");
                     link(rel="stylesheet", href="highlight.css");
-                    script(src="unveil.js");
                     script(src="highlight.js");
+                    script(src="unveil.js");
                     |tmpl| {
                         if self.livereload {
                             tmpl << html !(script(src="livereload.js"));
                         }
                     }
                 }
-                body(onscroll="scroll_changed()") {
+                body {
                    button(onclick="next_slide_left()", class="arrow-left") { : "<"}
                    button(onclick="next_slide_right()", class="arrow-right") { : ">"}
                    : Raw(&sections)
