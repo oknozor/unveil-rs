@@ -127,27 +127,49 @@ impl UnveilProject {
         self.get_dir_files()?;
         let html = self.to_html();
 
-        // Generate static site
-        let public = Path::new("public");
+        let public = PathBuf::from("public");
+
         // Double check we are actually in an unveil project
         let config = Path::new("unveil.toml");
-        if public.exists() && config.exists() {
-            std::fs::remove_dir_all(public)?;
+        if !public.exists() {
+            std::fs::create_dir("public")?;
         }
 
-        std::fs::create_dir("public")?;
+        if config.exists() {
+            // TODO : we actually need to separate the build/init/serve/clean logic
+            // Generate static site
+            let index = PathBuf::from("public/index.html");
+            let js = PathBuf::from("public/livereload.js");
+            let livereload = PathBuf::from("public/unveil.js");
 
-        let mut index = File::create("public/index.html")?;
-        index.write_all(html.as_bytes())?;
+            if index.exists() {
+                std::fs::remove_file(index)?;
+            }
 
-        let mut css = File::create("public/unveil.css")?;
-        css.write_all(CSS.as_bytes())?;
+            if js.exists() {
+                std::fs::remove_file(js)?;
+            }
 
-        let mut js = File::create("public/unveil.js")?;
-        js.write_all(JS.as_bytes())?;
+            if livereload.exists() {
+                std::fs::remove_file(livereload)?;
+            }
 
-        let mut livereload = File::create("public/livereload.js")?;
-        livereload.write_all(LIVERELOAD_JS.as_bytes())?;
+            let mut index = File::create("public/index.html")?;
+            index.write_all(html.as_bytes())?;
+
+            let mut livereload = File::create("public/livereload.js")?;
+            livereload.write_all(LIVERELOAD_JS.as_bytes())?;
+
+            let mut js = File::create("public/unveil.js")?;
+            js.write_all(JS.as_bytes())?;
+        }
+
+        // We don't overwrite CSS by default
+        let css = PathBuf::from("public/unveil.css");
+        if !css.exists() {
+            let mut css = File::create("public/unveil.css")?;
+            css.write_all(CSS.as_bytes())?;
+        }
 
         Ok(())
     }
@@ -235,18 +257,22 @@ impl UnveilProject {
         let serving_url = format!("http://{}", address);
         println!("Serving on: {}", serving_url);
 
-        open(serving_url);
-        let mut book_dir = std::env::current_dir()?;
-        book_dir.push("slides");
+        let mut slides_dir = std::env::current_dir()?;
+        slides_dir.push("slides");
 
         let mut paths = vec![];
 
-        let entries = fs::read_dir(book_dir)?;
+        let entries = fs::read_dir(slides_dir)?;
 
         for entry in entries {
             let entry = entry?;
             paths.push(entry.path());
         }
+
+        paths.push(PathBuf::from("unveil.toml"));
+        paths.push(PathBuf::from("public/unveil.css"));
+
+        open(serving_url);
 
         watcher::trigger_on_change(|paths| {
             println!("Files changed: {:?}", paths);

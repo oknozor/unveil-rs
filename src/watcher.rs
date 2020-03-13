@@ -24,6 +24,10 @@ where
         std::process::exit(1);
     };
 
+    // Watch changes on unveil.toml config and default CSS
+    let _ = watcher.watch("public/unveil.css", NonRecursive);
+    let _ = watcher.watch("unveil.toml", NonRecursive);
+
     println!("Listening for changes...");
 
     loop {
@@ -39,6 +43,21 @@ where
 
                 match event {
                     Create(path) | Write(path) | Remove(path) | Rename(_, path) => Some(path),
+                    // Since we are not watching for the whole project directory,
+                    // file watchers are dropped on modification so we have to recreate them.
+                    NoticeRemove(path) => {
+                        let path_str = path.to_str().unwrap();
+
+                        if path_str.contains("unveil.css") {
+                            let _ = watcher.watch("public/unveil.css", NonRecursive);
+                            Some(path)
+                        } else if path_str.contains("unveil.toml") {
+                            let _ = watcher.watch("unveil.toml", NonRecursive);
+                            Some(path)
+                        } else {
+                            None
+                        }
+                    }
                     _ => None,
                 }
             })
