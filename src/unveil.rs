@@ -8,7 +8,7 @@ use std::{
 
 use crate::{
     config::UnveilConfig,
-    generated::{CSS, JS, LANDING, LIVERELOAD_JS, SLIDE_EXAMPLE},
+    assets::{CSS, JS, LANDING, LIVERELOAD_JS, SLIDE_EXAMPLE, HIGHLIGHT_CSS, HIGHLIGHT_JS},
     watcher,
 };
 use horrorshow::{helper::doctype, prelude::*};
@@ -77,7 +77,9 @@ impl UnveilProject {
                     meta(charset="utf8");
                     title : "Unveil";
                     link(rel="stylesheet", href="unveil.css");
+                    link(rel="stylesheet", href="highlight.css");
                     script(src="unveil.js");
+                    script(src="highlight.js");
                     |tmpl| {
                         if self.livereload {
                             tmpl << html !(script(src="livereload.js"));
@@ -121,7 +123,7 @@ impl UnveilProject {
         sections
     }
 
-    /// Build a static file from the markdown content located in `slides/`
+    /// Build a assets file from the markdown content located in `slides/`
     pub fn build(&mut self) -> Result<()> {
         // Generate html from markdown files in
         self.get_dir_files()?;
@@ -137,10 +139,12 @@ impl UnveilProject {
 
         if config.exists() {
             // TODO : we actually need to separate the build/init/serve/clean logic
-            // Generate static site
+            // Generate assets site
             let index = PathBuf::from("public/index.html");
             let js = PathBuf::from("public/livereload.js");
-            let livereload = PathBuf::from("public/unveil.js");
+            let live_reload = PathBuf::from("public/unveil.js");
+            let highlight_js = PathBuf::from("public/highlight.js");
+            let highlight_css = PathBuf::from("public/highlight.css");
 
             if index.exists() {
                 std::fs::remove_file(index)?;
@@ -150,25 +154,43 @@ impl UnveilProject {
                 std::fs::remove_file(js)?;
             }
 
-            if livereload.exists() {
-                std::fs::remove_file(livereload)?;
+            if live_reload.exists() {
+                std::fs::remove_file(live_reload)?;
             }
+
+            if highlight_js.exists() {
+                std::fs::remove_file(highlight_js)?;
+            }
+
+            if highlight_css.exists() {
+                std::fs::remove_file(highlight_css)?;
+            }
+
 
             let mut index = File::create("public/index.html")?;
             index.write_all(html.as_bytes())?;
 
-            let mut livereload = File::create("public/livereload.js")?;
-            livereload.write_all(LIVERELOAD_JS.as_bytes())?;
-
             let mut js = File::create("public/unveil.js")?;
-            js.write_all(JS.as_bytes())?;
+            js.write_all(JS)?;
+
+            let mut livereload = File::create("public/livereload.js")?;
+            livereload.write_all(LIVERELOAD_JS)?;
+
+            let mut live_reload = File::create("public/highlight.js")?;
+            live_reload.write_all(LIVERELOAD_JS)?;
+
+            let mut js = File::create("public/highlight.js")?;
+            js.write_all(HIGHLIGHT_JS)?;
+
+            let mut js = File::create("public/highlight.css")?;
+            js.write_all(HIGHLIGHT_CSS)?;
         }
 
         // We don't overwrite CSS by default
         let css = PathBuf::from("public/unveil.css");
         if !css.exists() {
             let mut css = File::create("public/unveil.css")?;
-            css.write_all(CSS.as_bytes())?;
+            css.write_all(CSS)?;
         }
 
         Ok(())
@@ -191,9 +213,9 @@ impl UnveilProject {
 
         // Add a default example slides
         let mut landing = File::create(&format!("{}/slides/landing.md", project_name))?;
-        landing.write_all(LANDING.as_bytes())?;
+        landing.write_all(LANDING)?;
         let mut landing = File::create(&format!("{}/slides/slide.md", project_name))?;
-        landing.write_all(SLIDE_EXAMPLE.as_bytes())?;
+        landing.write_all(SLIDE_EXAMPLE)?;
 
         // Generate default config
         let mut config_file = File::create(&format!("{}/unveil.toml", project_name))?;
