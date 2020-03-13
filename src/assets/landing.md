@@ -1,4 +1,6 @@
-# Welcome to Unveil-rs 
+# Unveil-rs 
+
+The Markdown presentation framework. 
 
 ## Getting started
 1. Init with `unveil init`

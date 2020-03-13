@@ -1,4 +1,5 @@
 html {
+    background-color: white;
     font-size: xx-large;
     margin: 0;
     width: 100%;
@@ -22,6 +23,10 @@ section {
     width: 100%;
 }
 
+article {
+    width: 75%;
+}
+
 article h1 {
     font-size: 2.5rem;
 }
@@ -39,7 +44,10 @@ article {
     align-items: center;
 }
 
-p, li > code.hljs { display: inline; }
+li > code.hljs , p > code.hljs {
+    display: inline;
+    padding: 2px;
+}
 
 .arrow-left {
     position: fixed;
