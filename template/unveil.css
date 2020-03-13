@@ -1,4 +1,3 @@
-
 html {
     font-size: xx-large;
     margin: 0;
@@ -9,16 +8,30 @@ html {
 
 body {
     margin: 0;
+    height: 100%;
     display: flex;
-    flex-wrap: nowrap;
     align-items: center;
+    justify-items: center;
 }
 
 section {
+    margin-bottom: 5em;
     display: flex;
     flex: 0 0 auto;
     justify-content: center;
     width: 100%;
+}
+
+article h1 {
+    font-size: 2.5rem;
+}
+
+article h2 {
+    margin-left: 0.5em;
+}
+
+article :not(h1) :not(h2) {
+    margin-left: 1em;
 }
 
 article {
