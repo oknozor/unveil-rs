@@ -10,3 +10,4 @@ pub mod config;
 pub mod helper;
 pub mod server;
 pub mod unveil;
+pub mod html;

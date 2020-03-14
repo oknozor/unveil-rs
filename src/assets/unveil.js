@@ -12,7 +12,7 @@ window.onresize = () => {
 window.onload = () => {
     Array
         .from(document.querySelectorAll('code'))
-        .forEach( block =>  hljs.highlightBlock(block));
+        .forEach(block => hljs.highlightBlock(block));
 };
 
 window.document.addEventListener("keydown", e => {
@@ -23,26 +23,69 @@ window.document.addEventListener("keydown", e => {
     }
 });
 
-function get_slide(idx) {
+const get_slide = (idx) => {
     return document.getElementById("unveil-slide-" + idx);
-}
+};
 
-function next_slide_right() {
+const next_slide_right = () => {
     let slide = get_slide(current_slide + 1);
     if (slide) {
         current_slide++;
         smooth_scroll(slide);
     }
-}
+};
 
-function next_slide_left() {
+const next_slide_left = () => {
     if (current_slide >= 1) {
         current_slide--;
         let slide = get_slide(current_slide);
         smooth_scroll(slide);
     }
-}
+};
 
-function smooth_scroll(el) {
+const smooth_scroll = (el) => {
     el.scrollIntoView({behavior: "smooth"});
+};
+
+
+const timeout = (promise) => {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => reject(new Error("timeout")), 6000);
+        promise.then(resolve, reject)
+    })
+};
+
+const add_playpen_button = () => {
+    document.getElementsByName('pre')
+        .forEach(el => {
+            el.ad
+        })
 }
+const fetch_with_timeout = (url) => {
+    const params = {
+        code: "pub fn main() { println!(\" hello \")}",
+        edition: "2018",
+        channel: "stable",
+        mode: "debug",
+        backtrace: false,
+        tests: false,
+        crateType: "bin"
+    };
+
+    const fetch_playpen = fetch("https://play.integer32.com/execute",
+        {
+            headers: {
+                'Content-Type': "application/json",
+            },
+            method: 'POST',
+            mode: 'cors',
+            body: JSON.stringify(params)
+        }
+    );
+
+    timeout(fetch_playpen)
+        .catch(error => console.log(error))
+        .then(response => response.json().then(json => {
+            console.log(json)
+        }));
+};

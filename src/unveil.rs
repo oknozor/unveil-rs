@@ -13,6 +13,7 @@ use crate::{
 
 use crate::server::Server;
 use std::path::{Path, PathBuf};
+use crate::html::Preprocessor;
 
 pub struct UnveilProject {
     pub root: PathBuf,
@@ -33,7 +34,7 @@ impl Default for UnveilProject {
 
 impl UnveilProject {
     /// get markdowns slides as strings
-    fn get_dir_files(&mut self) -> Result<()> {
+    fn get_markdown_from_file() -> Result<Vec<String>> {
         let mut markdown_contents = vec![];
         let config = UnveilConfig::from_disk("unveil.toml")?;
 
@@ -47,15 +48,16 @@ impl UnveilProject {
             markdown_contents.push(contents);
         }
 
-        self.markdown = markdown_contents;
-        Ok(())
+        ;
+        Ok(markdown_contents)
     }
 
     /// Build a assets file from the markdown content located in `slides/`
     pub fn build(&mut self) -> Result<()> {
         // Generate html from markdown files in
-        self.get_dir_files()?;
-        let html = helper::html::build(&self.markdown, self.livereload);
+        let markdowns = UnveilProject::get_markdown_from_file()?;
+        let mut processor = Preprocessor::new(markdowns, self.livereload);
+        let html = processor.build();
 
         let public = PathBuf::from("public");
 
