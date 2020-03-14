@@ -26,7 +26,7 @@ function next_slide_right() {
     let slide = get_slide(current_slide + 1);
     if (slide) {
         current_slide++;
-        slide.scrollIntoView(true);
+        smooth_scroll(slide);
     }
 }
 
@@ -34,6 +34,10 @@ function next_slide_left() {
     if (current_slide >= 1) {
         current_slide--;
         let slide = get_slide(current_slide);
-        slide.scrollIntoView(true);
+        smooth_scroll(slide);
     }
+}
+
+function smooth_scroll(el) {
+    el.scrollIntoView({behavior: "smooth"});
 }
