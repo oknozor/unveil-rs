@@ -64,12 +64,19 @@ li > code.hljs , p > code.hljs {
     right: 0;
 }
 
-.btn-playpen {
-    margin: 1em;
-    width: 35px;
-    position: fixed;
-    top: 50%;
-    right: 50%;
+
+.btn-code {
+    top: 0;
+    margin-top: 0.2rem;
+    margin-left: 93%;
 }
+
+.btn-code > i {
+    margin-left: 0.5em;
+}
+
+
+
+
 
 

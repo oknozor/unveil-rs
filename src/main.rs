@@ -15,7 +15,10 @@ fn main() {
 
     let mut project = UnveilProject::default();
     if matches.is_present("init") {
-        let project_name = matches.subcommand_matches("init").unwrap().value_of("PROJECT_NAME");
+        let project_name = matches
+            .subcommand_matches("init")
+            .unwrap()
+            .value_of("PROJECT_NAME");
         project.init(project_name).unwrap();
     } else if matches.is_present("build") {
         project.build().unwrap();

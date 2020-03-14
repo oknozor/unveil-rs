@@ -55,15 +55,32 @@ const timeout = (promise) => {
     })
 };
 
-const add_playpen_button = () => {
-    document.getElementsByName('pre')
-        .forEach(el => {
-            el.ad
+// No arrow function here because we need to pass `element`
+function play_playpen(id) {
+    let play_button = window.document.getElementById(id);
+    let result = play_button.querySelector('.result');
+    console.log(play_button.parentElement);
+    let code_block = play_button.parentElement.parentElement.querySelector('code');
+
+    if (!result) {
+        result = document.createElement('code');
+        result.className = 'result hljs language-bash';
+        code_block.append(result);
+    }
+
+    let code_text = code_block.textContent;
+    console.log(code_text);
+
+    fetch_with_timeout(code_text,"https://play.integer32.com/execute")
+        .catch(error => console.log(result.innerText = error.message))
+        .then(response => response.json()).then(json => {
+            result.innerText = json.stderr + '\n' + json.stdout
         })
 }
-const fetch_with_timeout = (url) => {
+
+const fetch_with_timeout = (code, url) => {
     const params = {
-        code: "pub fn main() { println!(\" hello \")}",
+        code,
         edition: "2018",
         channel: "stable",
         mode: "debug",
@@ -72,7 +89,7 @@ const fetch_with_timeout = (url) => {
         crateType: "bin"
     };
 
-    const fetch_playpen = fetch("https://play.integer32.com/execute",
+    const fetch_playpen = fetch(url,
         {
             headers: {
                 'Content-Type': "application/json",
@@ -83,9 +100,5 @@ const fetch_with_timeout = (url) => {
         }
     );
 
-    timeout(fetch_playpen)
-        .catch(error => console.log(error))
-        .then(response => response.json().then(json => {
-            console.log(json)
-        }));
+    return timeout(fetch_playpen)
 };
