@@ -24,12 +24,13 @@ Unveil expect the following directory structure to render a presentation :
 
 ### Commands
 
-| name   | description          |   arg                               | 
-| :---   | :-----------         | :---                                |
-|init    | new project          |  `PROJECT_NAME` default = `unveil`  |
-|build   | build the project    |                                     |
-|serve   | serve the project    |                                     |
-|new     | create a new slide   | `SLIDE_NAME` required               |
+| name   | description                              |   args                              | 
+| :---   | :-----------                             | :---                                |
+|init    | new project                              |  `PROJECT_NAME` default = `unveil`  |
+|build   | build the project                        |                                     |
+|clean   | wipe the public  directory               |                                     |
+|serve   | serve the project, build it if needed    |                                     |
+|new     | create a new slide                       | `SLIDE_NAME` required               |
 
 
 ### User Theme 

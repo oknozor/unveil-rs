@@ -27,7 +27,7 @@ fn main() {
         let slide_name = matches
             .subcommand_matches("new")
             .unwrap()
-            .value_of("SLIDENAME")
+            .value_of("SLIDE_NAME")
             .unwrap();
 
         project.new_slide(slide_name).unwrap()

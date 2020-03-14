@@ -127,8 +127,7 @@ impl UnveilProject {
             format!("{}.md", name)
         };
 
-        let mut path = PathBuf::from("slides");
-        path.push(&filename);
+        let path = PathBuf::from("slides").join(&filename);
 
         let mut config = UnveilConfig::from_disk("unveil.toml")?;
 
@@ -145,7 +144,7 @@ impl UnveilProject {
     }
 
     pub fn serve(
-        &self,
+        &mut self,
         port: Option<i32>,
     ) -> Result<()> {
         let mut server = Server::default();
@@ -153,6 +152,8 @@ impl UnveilProject {
         if let Some(port) = port {
             server.with_port(port)
         }
+
+        self.build()?;
 
         server.serve()
     }
