@@ -6,10 +6,11 @@ fn main() {
         .version("1.0")
         .author("Paul D. <paul.delafosse@protonmail.com>")
         .about("A assets presentation generator")
-        .subcommand(SubCommand::with_name("init").arg(Arg::with_name("name")))
+        .subcommand(SubCommand::with_name("init").arg(Arg::with_name("PROJECT_NAME")))
         .subcommand(SubCommand::with_name("build"))
+        .subcommand(SubCommand::with_name("clean"))
         .subcommand(SubCommand::with_name("serve"))
-        .subcommand(SubCommand::with_name("new").arg(Arg::with_name("SLIDENAME").required(true)))
+        .subcommand(SubCommand::with_name("new").arg(Arg::with_name("SLIDE_NAME").required(true)))
         .get_matches();
 
     let mut project = UnveilProject::default();
@@ -18,6 +19,8 @@ fn main() {
         project.init(project_name).unwrap();
     } else if matches.is_present("build") {
         project.build().unwrap();
+    } else if matches.is_present("clean") {
+        UnveilProject::clean().unwrap();
     } else if matches.is_present("serve") {
         project.serve(None).unwrap()
     } else if matches.is_present("new") {

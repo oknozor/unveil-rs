@@ -23,7 +23,6 @@ impl Default for UnveilConfig {
 impl FromStr for UnveilConfig {
     type Err = Error;
 
-    /// Load a `Config` from some string.
     fn from_str(src: &str) -> Result<Self> {
         let toml = toml::from_str(src).expect("Error loading config");
         Ok(toml)

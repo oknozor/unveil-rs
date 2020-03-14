@@ -1,5 +1,4 @@
 use anyhow::Result;
-use pulldown_cmark::{html, Options, Parser};
 use std::{
     fs,
     fs::{File, OpenOptions},
@@ -7,27 +6,13 @@ use std::{
 };
 
 use crate::{
+    assets::{CSS, HIGHLIGHT_CSS, HIGHLIGHT_JS, JS, LANDING, LIVERELOAD_JS, SLIDE_EXAMPLE},
     config::UnveilConfig,
-    assets::{CSS, JS, LANDING, LIVERELOAD_JS, SLIDE_EXAMPLE, HIGHLIGHT_CSS, HIGHLIGHT_JS},
-    watcher,
+    helper,
 };
-use horrorshow::{helper::doctype, prelude::*};
-use iron::{
-    headers,
-    status,
-    AfterMiddleware,
-    Chain,
-    Iron,
-    IronError,
-    IronResult,
-    Request,
-    Response,
-    Set,
-};
-use std::{
-    ffi::OsStr,
-    path::{Path, PathBuf},
-};
+
+use crate::server::Server;
+use std::path::{Path, PathBuf};
 
 pub struct UnveilProject {
     pub root: PathBuf,
@@ -66,77 +51,11 @@ impl UnveilProject {
         Ok(())
     }
 
-    /// Build the `index.hml` html page
-    fn to_html(&self) -> String {
-        let sections = self.markdown_to_html_sections();
-
-        let html = html! {
-            : doctype::HTML;
-            html(lang="EN") {
-                head {
-                    meta(charset="utf8");
-                    title : "Unveil";
-                    link(rel="stylesheet", href="unveil.css");
-                    link(rel="stylesheet", href="highlight.css");
-                    script(src="highlight.js");
-                    script(src="unveil.js");
-                    |tmpl| {
-                        if self.livereload {
-                            tmpl << html !(script(src="livereload.js"));
-                        }
-                    }
-                }
-                body {
-                   div(onclick="next_slide_right()", class="arrow-right") {
-                        svg(aria-hidden="true", focusable="false", data-prefix="fas", data-icon="chevron-right", class="svg-inline--fa fa-chevron-right fa-w-10", role="img", xmlns="http://www.w3.org/2000/svg", viewBox="0 0 320 512") {
-                            path(fill="currentColor", d="M285.476 272.971L91.132 467.314c-9.373 9.373-24.569 9.373-33.941 0l-22.667-22.667c-9.357-9.357-9.375-24.522-.04-33.901L188.505 256 34.484 101.255c-9.335-9.379-9.317-24.544.04-33.901l22.667-22.667c9.373-9.373 24.569-9.373 33.941 0L285.475 239.03c9.373 9.372 9.373 24.568.001 33.941z")
-                        }
-                   }
-
-                   div(onclick="next_slide_left()", class="arrow-left") {
-                        svg(aria-hidden="true", focusable="false", data-prefix="fas", data-icon="chevron-left", class="svg-inline--fa fa-chevron-right fa-w-10", role="img", xmlns="http://www.w3.org/2000/svg", viewBox="0 0 320 512") {
-                            path(fill="currentColor", d="M34.52 239.03L228.87 44.69c9.37-9.37 24.57-9.37 33.94 0l22.67 22.67c9.36 9.36 9.37 24.52.04 33.9L131.49 256l154.02 154.75c9.34 9.38 9.32 24.54-.04 33.9l-22.67 22.67c-9.37 9.37-24.57 9.37-33.94 0L34.52 272.97c-9.37-9.37-9.37-24.57 0-33.94z")
-                        }
-                   }
-                   : Raw(&sections)
-                }
-            }
-        };
-
-        format!("{}", html)
-    }
-
-    /// Convert each markdown pages to html
-    fn markdown_to_html_sections(&self) -> String {
-        let mut sections = String::new();
-        self.markdown
-            .iter()
-            .enumerate()
-            .map(|(idx, str)| {
-                let parser = Parser::new_ext(&str, Options::empty());
-                let mut buffer = String::new();
-                html::push_html(&mut buffer, parser);
-
-                (idx, buffer)
-            })
-            .for_each(|(idx, html)| {
-                let idx = &format!("unveil-slide-{}", idx);
-                sections.push_str(&format!(
-                    "{}",
-                    html! {
-                        section(id=idx) { article { : Raw(&html) } }
-                    }
-                ));
-            });
-
-        sections
-    }
-
     /// Build a assets file from the markdown content located in `slides/`
     pub fn build(&mut self) -> Result<()> {
         // Generate html from markdown files in
         self.get_dir_files()?;
-        let html = self.to_html();
+        let html = helper::html::build(&self.markdown, self.livereload);
 
         let public = PathBuf::from("public");
 
@@ -147,57 +66,16 @@ impl UnveilProject {
         }
 
         if config.exists() {
-            // TODO : we actually need to separate the build/init/serve/clean logic
-            // Generate assets site
-            let index = PathBuf::from("public/index.html");
-            let js = PathBuf::from("public/livereload.js");
-            let live_reload = PathBuf::from("public/unveil.js");
-            let highlight_js = PathBuf::from("public/highlight.js");
-            let highlight_css = PathBuf::from("public/highlight.css");
-
-            if index.exists() {
-                std::fs::remove_file(index)?;
-            }
-
-            if js.exists() {
-                std::fs::remove_file(js)?;
-            }
-
-            if live_reload.exists() {
-                std::fs::remove_file(live_reload)?;
-            }
-
-            if highlight_js.exists() {
-                std::fs::remove_file(highlight_js)?;
-            }
-
-            if highlight_css.exists() {
-                std::fs::remove_file(highlight_css)?;
-            }
-
-
-            let mut index = File::create("public/index.html")?;
-            index.write_all(html.as_bytes())?;
-
-            let mut js = File::create("public/unveil.js")?;
-            js.write_all(JS)?;
-
-            let mut livereload = File::create("public/livereload.js")?;
-            livereload.write_all(LIVERELOAD_JS)?;
-
-            let mut live_reload = File::create("public/highlight.js")?;
-            live_reload.write_all(LIVERELOAD_JS)?;
-
-            let mut js = File::create("public/highlight.js")?;
-            js.write_all(HIGHLIGHT_JS)?;
-
-            let mut js = File::create("public/highlight.css")?;
-            js.write_all(HIGHLIGHT_CSS)?;
+            helper::files::replace("public/index.html", html.as_bytes())?;
+            helper::files::replace("public/unveil.js", JS)?;
+            helper::files::replace("public/livereload.js", LIVERELOAD_JS)?;
+            helper::files::replace("public/highlight.js", LIVERELOAD_JS)?;
+            helper::files::replace("public/highlight.js", HIGHLIGHT_JS)?;
+            helper::files::replace("public/highlight.css", HIGHLIGHT_CSS)?;
         }
 
         // We don't overwrite CSS by default
-        let css = PathBuf::from("public/unveil.css");
-        if !css.exists() {
+        if !PathBuf::from("public/unveil.css").exists() {
             let mut css = File::create("public/unveil.css")?;
             css.write_all(CSS)?;
         }
@@ -234,6 +112,11 @@ impl UnveilProject {
         Ok(())
     }
 
+    pub fn clean() -> Result<()> {
+        fs::remove_dir_all("public")
+            .map_err(|err| anyhow!("Unable to remove public directory : {}", err))
+    }
+
     pub fn new_slide(
         &mut self,
         name: &str,
@@ -262,102 +145,15 @@ impl UnveilProject {
     }
 
     pub fn serve(
-        &mut self,
+        &self,
         port: Option<i32>,
     ) -> Result<()> {
-        let address = match port {
-            Some(port) => format!("localhost:{}", port),
-            None => "localhost:7878".into(),
-        };
+        let mut server = Server::default();
 
-        let mut chain = Chain::new(staticfile::Static::new(PathBuf::from("public/")));
-
-        chain.link_after(NoCache);
-        chain.link_after(ErrorRecover);
-        let _iron = Iron::new(chain).http(&*address)?;
-
-        let ws_server = ws::WebSocket::new(|_| |_| Ok(()))?;
-
-        let broadcaster = ws_server.broadcaster();
-        std::thread::spawn(move || {
-            ws_server
-                .listen("127.0.0.1:3000")
-                .expect("Error Opening websocket");
-        });
-
-        let serving_url = format!("http://{}", address);
-        println!("Serving on: {}", serving_url);
-
-        let mut slides_dir = std::env::current_dir()?;
-        slides_dir.push("slides");
-
-        let mut paths = vec![];
-
-        let entries = fs::read_dir(slides_dir)?;
-
-        for entry in entries {
-            let entry = entry?;
-            paths.push(entry.path());
+        if let Some(port) = port {
+            server.with_port(port)
         }
 
-        paths.push(PathBuf::from("unveil.toml"));
-        paths.push(PathBuf::from("public/unveil.css"));
-
-        open(serving_url);
-
-        watcher::trigger_on_change(|paths| {
-            println!("Files changed: {:?}", paths);
-            println!("Building presentation...");
-
-            let mut project = UnveilProject::default();
-            let result = project.build();
-
-            if let Err(e) = result {
-                eprintln!("Unable to load the presentation : {}", e);
-            } else {
-                let _ = broadcaster.send("reload");
-            }
-        });
-
-        Ok(())
-    }
-}
-
-struct ErrorRecover;
-
-struct NoCache;
-
-impl AfterMiddleware for NoCache {
-    fn after(
-        &self,
-        _: &mut Request,
-        mut res: Response,
-    ) -> IronResult<Response> {
-        res.headers.set(headers::CacheControl(vec![
-            headers::CacheDirective::NoStore,
-            headers::CacheDirective::MaxAge(0u32),
-        ]));
-
-        Ok(res)
-    }
-}
-
-impl AfterMiddleware for ErrorRecover {
-    fn catch(
-        &self,
-        _: &mut Request,
-        err: IronError,
-    ) -> IronResult<Response> {
-        match err.response.status {
-            // each error will result in 404 response
-            Some(_) => Ok(err.response.set(status::NotFound)),
-            _ => Err(err),
-        }
-    }
-}
-
-fn open<P: AsRef<OsStr>>(path: P) {
-    if let Err(e) = open::that(path) {
-        eprintln!("Error opening web browser: {}", e);
+        server.serve()
     }
 }

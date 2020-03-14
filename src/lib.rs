@@ -5,7 +5,8 @@ extern crate serde_derive;
 #[macro_use]
 extern crate anyhow;
 
-pub mod config;
-pub mod unveil;
-pub mod watcher;
 pub mod assets;
+pub mod config;
+pub mod helper;
+pub mod server;
+pub mod unveil;

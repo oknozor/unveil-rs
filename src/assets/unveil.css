@@ -49,19 +49,18 @@ li > code.hljs , p > code.hljs {
     padding: 2px;
 }
 
-.arrow-left {
+.arrow-left, .arrow-right {
     margin: 1em;
     width: 35px;
     position: fixed;
     top: 50%;
+}
+
+.arrow-left {
     left: 0;
 }
 
 .arrow-right {
-    margin: 1em;
-    width: 35px;
-    position: fixed;
-    top: 0;
     right: 0;
 }
 
