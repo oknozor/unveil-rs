@@ -5,7 +5,7 @@ fn main() {
     let matches = App::new("Unveil.rs")
         .version("1.0")
         .author("Paul D. <paul.delafosse@protonmail.com>")
-        .about("A assets presentation generator")
+        .about("A markdown presentation generator")
         .subcommand(SubCommand::with_name("init").arg(Arg::with_name("PROJECT_NAME")))
         .subcommand(SubCommand::with_name("build"))
         .subcommand(SubCommand::with_name("clean"))

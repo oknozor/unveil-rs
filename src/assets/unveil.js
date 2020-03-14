@@ -55,8 +55,8 @@ const timeout = (promise) => {
     })
 };
 
-// No arrow function here because we need to pass `element`
-function play_playpen(id) {
+
+const play_playpen = (id) => {
     let play_button = window.document.getElementById(id);
     let result = play_button.querySelector('.result');
     console.log(play_button.parentElement);
@@ -71,11 +71,11 @@ function play_playpen(id) {
     let code_text = code_block.textContent;
     console.log(code_text);
 
-    fetch_with_timeout(code_text,"https://play.integer32.com/execute")
+    fetch_with_timeout(code_text, "https://play.integer32.com/execute")
         .catch(error => console.log(result.innerText = error.message))
         .then(response => response.json()).then(json => {
-            result.innerText = json.stderr + '\n' + json.stdout
-        })
+        result.innerText = json.stderr + '\n' + json.stdout
+    })
 }
 
 const fetch_with_timeout = (code, url) => {

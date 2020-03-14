@@ -119,7 +119,7 @@ mod tests {
 let a = 1;
 ```
 "#
-        .to_owned()];
+            .to_owned()];
 
         let mut preprocessor = Preprocessor::new(markdown, true);
 
@@ -145,7 +145,7 @@ let a = 1;
 let b = 2;
 ```
         "#
-            .to_owned(),
+                .to_owned(),
         ];
 
         let mut preprocessor = Preprocessor::new(markdown, true);
