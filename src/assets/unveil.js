@@ -4,6 +4,11 @@ hljs.configure({
     tabReplace: '    ',
 });
 
+window.onresize = () => {
+    const slide = get_slide(current_slide);
+    slide.scrollIntoView();
+};
+
 window.onload = () => {
     Array
         .from(document.querySelectorAll('code'))
