@@ -1,13 +1,8 @@
 ---
 language: rust
-rust: nightly
-
-before_script:
-  - rustup component add rustfmt
-  - rustup component add clippy
+rust: stable
 
 script:
-  - cargo clippy
   - cargo build --verbose --all
   - cargo test --verbose --all
   - cargo install --path .
