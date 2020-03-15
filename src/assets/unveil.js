@@ -55,11 +55,28 @@ const timeout = (promise) => {
     })
 };
 
+const clipboard = (id) => {
+    let code_block = document.getElementById(id).parentElement.parentElement;
+    let old = document.getElementById('dummy_clipboard');
+
+    if(old) {
+        code_block.removeChild(old);
+    }
+
+    let dummy_textarea = document.createElement('textarea');
+    dummy_textarea.style.display = 'none';
+    dummy_textarea.id = 'dummy_clipboard';
+    code_block.appendChild(dummy_textarea);
+    console.log(code_block.innerText);
+    dummy_textarea.value = code_block.innerText;
+    dummy_textarea.select();
+
+    document.execCommand("copy");
+};
 
 const play_playpen = (id) => {
     let play_button = window.document.getElementById(id);
     let result = play_button.querySelector('.result');
-    console.log(play_button.parentElement);
     let code_block = play_button.parentElement.parentElement.querySelector('code');
 
     if (!result) {
@@ -69,14 +86,13 @@ const play_playpen = (id) => {
     }
 
     let code_text = code_block.textContent;
-    console.log(code_text);
 
     fetch_with_timeout(code_text, "https://play.integer32.com/execute")
         .catch(error => console.log(result.innerText = error.message))
         .then(response => response.json()).then(json => {
         result.innerText = json.stderr + '\n' + json.stdout
     })
-}
+};
 
 const fetch_with_timeout = (code, url) => {
     const params = {

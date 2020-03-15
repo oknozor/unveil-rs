@@ -75,8 +75,8 @@ impl UnveilProject {
         // Generate html from markdown files in
         let markdowns = UnveilProject::get_markdown_from_file()?;
         let mut processor = Preprocessor::new(markdowns, self.livereload);
-        let html = processor.build();
 
+        let (user_css, html) = processor.build()?;
         let public = PathBuf::from("public");
 
         // Double check we are actually in an unveil project
@@ -88,6 +88,11 @@ impl UnveilProject {
         if config.exists() {
             helper::fs::replace("public/index.html", html.as_bytes())?;
             helper::fs::write_file("public/unveil.js", JS)?;
+
+            if let Some(css) = user_css {
+                helper::fs::replace("public/user_css.css", css.as_bytes())?;
+            }
+
             helper::fs::write_file("public/highlight.css", HIGHLIGHT_CSS)?;
             helper::fs::write_file("public/livereload.js", LIVERELOAD_JS)?;
             helper::fs::write_file("public/highlight.js", HIGHLIGHT_JS)?;
