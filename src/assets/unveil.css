@@ -2,9 +2,8 @@ html {
     background-color: white;
     font-size: xx-large;
     margin: 0;
-    width: 100%;
-    height: 100%;
     overflow: hidden;
+    height: 100%;
 }
 
 body {
@@ -16,14 +15,15 @@ body {
 }
 
 section {
-    margin-bottom: 5em;
     display: flex;
     flex: 0 0 auto;
     justify-content: center;
+    height: 100%;
     width: 100%;
 }
 
 article {
+    margin-top: 5%;
     width: 75%;
 }
 

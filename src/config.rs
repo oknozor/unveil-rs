@@ -14,7 +14,7 @@ impl Default for UnveilConfig {
         UnveilConfig {
             name: "unveil".to_string(),
             language: "EN".to_string(),
-            slides: vec!["landing.md".into(), "slide.md".into()],
+            slides: vec!["landing.md".into()],
             user_theme: None,
         }
     }

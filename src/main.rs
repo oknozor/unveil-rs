@@ -10,7 +10,7 @@ fn main() {
         .subcommand(SubCommand::with_name("build"))
         .subcommand(SubCommand::with_name("clean"))
         .subcommand(SubCommand::with_name("serve"))
-        .subcommand(SubCommand::with_name("new").arg(Arg::with_name("SLIDE_NAME").required(true)))
+        .subcommand(SubCommand::with_name("add").arg(Arg::with_name("SLIDE_NAME").required(true)))
         .get_matches();
 
     let mut project = UnveilProject::default();
@@ -26,9 +26,9 @@ fn main() {
         UnveilProject::clean().unwrap();
     } else if matches.is_present("serve") {
         project.serve(None).unwrap()
-    } else if matches.is_present("new") {
+    } else if matches.is_present("add") {
         let slide_name = matches
-            .subcommand_matches("new")
+            .subcommand_matches("add")
             .unwrap()
             .value_of("SLIDE_NAME")
             .unwrap();

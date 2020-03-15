@@ -6,7 +6,7 @@ use std::{
 };
 
 use crate::{
-    assets::{CSS, HIGHLIGHT_CSS, HIGHLIGHT_JS, JS, LANDING, LIVERELOAD_JS, SLIDE_EXAMPLE},
+    assets::{CSS, HIGHLIGHT_CSS, HIGHLIGHT_JS, JS, LANDING, LIVERELOAD_JS},
     config::UnveilConfig,
     helper,
 };
@@ -193,8 +193,6 @@ impl UnveilProject {
         // Add a default example slides
         let mut landing = File::create(&format!("{}/slides/landing.md", project_name))?;
         landing.write_all(LANDING)?;
-        let mut landing = File::create(&format!("{}/slides/slide.md", project_name))?;
-        landing.write_all(SLIDE_EXAMPLE)?;
 
         // Generate default config
         let mut config_file = File::create(&format!("{}/unveil.toml", project_name))?;

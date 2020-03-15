@@ -2,6 +2,7 @@ let current_slide = 0;
 
 hljs.configure({
     tabReplace: '    ',
+    languages: []
 });
 
 window.onresize = () => {

@@ -126,7 +126,7 @@ impl Preprocessor {
                 let idx = &format!("unveil-slide-{}", idx);
 
                 if let Some(stylematter) = stylematter {
-                    let scss_block = &format!("#{}  {{ article {{ {} }} }}", idx, stylematter);
+                    let scss_block = &format!("#{} {{ {} }}", idx, stylematter);
                     scss_output.push_str(scss_block);
                 }
 

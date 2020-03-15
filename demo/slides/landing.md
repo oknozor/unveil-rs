@@ -7,5 +7,3 @@ The Markdown presentation framework.
 2. Build with `unveil build`
 3. Serve with `unveil serve`
 4. Add more slides with `unveil add {slide_name}`
-
-## contribute 
