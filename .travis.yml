@@ -1,0 +1,23 @@
+---
+language: rust
+rust: nightly
+
+before_script:
+  - rustup component add rustfmt
+  - rustup component add clippy
+
+script:
+  - cargo clippy
+  - cargo build --verbose --all
+  - cargo test --verbose --all
+  - cargo install --path .
+  - cd demo && unveil build
+
+deploy:
+  provider: pages
+  skip-cleanup: true
+  github-token: $GITHUB_TOKEN
+  local-dir: demo/public
+  keep-history: false
+  on:
+    branch: master
