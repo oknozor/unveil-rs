@@ -121,7 +121,6 @@ impl Preprocessor {
         self.html = result;
     }
 
-
     // This is just like String::replace implementation with index
     fn insert_playpen_button(&mut self) {
         let code_tag = r#"<code class="language-rust">"#;
@@ -139,12 +138,12 @@ impl Preprocessor {
             };
             let insert = format!("{}{}", button.to_string(), code_tag);
 
-            result.push_str(unsafe { self.html.get_unchecked(last_end..start) });
+            result.push_str(&self.html[last_end..start]);
             result.push_str(&insert);
             last_end = start + part.len();
             count += 1;
         }
-        result.push_str(unsafe { self.html.get_unchecked(last_end..self.html.len()) });
+        result.push_str(&self.html[last_end..self.html.len()]);
         self.html = result;
     }
 
