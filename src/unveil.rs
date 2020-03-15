@@ -30,7 +30,7 @@ use crate::{
         FONT_AWESOME_WOFF_900,
         FONT_AWESOME_WOFF_BRANDS,
     },
-    html::Preprocessor,
+    html::HtmlBuilder,
     server::Server,
 };
 use std::path::{Path, PathBuf};
@@ -74,7 +74,7 @@ impl UnveilProject {
     pub fn build(&mut self) -> Result<()> {
         // Generate html from markdown files in
         let markdowns = UnveilProject::get_markdown_from_file()?;
-        let mut processor = Preprocessor::new(markdowns, self.livereload);
+        let mut processor = HtmlBuilder::new(markdowns, self.livereload);
 
         let (user_css, html) = processor.build()?;
         let public = PathBuf::from("public");

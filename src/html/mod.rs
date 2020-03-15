@@ -1,8 +1,11 @@
+use crate::html::preprocessor::Preprocessor;
 use anyhow::Result;
 use horrorshow::{helper::doctype, prelude::*};
 use pulldown_cmark::{html, Options, Parser};
 use regex::Regex;
 use sass_rs::Options as SassOption;
+
+mod preprocessor;
 
 // from zola https://github.com/getzola/zola/blob/1972e58823417a58eb1cc646ee346e7c3b04addb/components/front_matter/src/lib.rs
 lazy_static! {
@@ -10,18 +13,18 @@ lazy_static! {
         Regex::new(r"^[[:space:]]*\+\+\+\r?\n((?s).*?(?-s))\+\+\+\r?\n?((?s).*(?-s))$").unwrap();
 }
 
-pub struct Preprocessor {
+pub struct HtmlBuilder {
     pub html: String,
     pub scss: String,
     pub markdown: Vec<String>,
     live_reload: bool,
 }
 
-impl Preprocessor {
+impl HtmlBuilder {
     pub fn build(&mut self) -> Result<(Option<String>, String)> {
         self.markdown_to_html();
-        self.insert_user_class();
-        self.insert_playpen_button();
+        self.html = Preprocessor::insert_user_class(&self.html);
+        self.html = Preprocessor::insert_playpen_button(&self.html);
 
         let css = if !self.scss.is_empty() {
             Some(
@@ -84,75 +87,12 @@ impl Preprocessor {
         (Some(caps[1].to_string()), caps[2].to_string())
     }
 
-    fn insert_user_class(&mut self) {
-        let user_class_start = r#"[class=&quot;"#;
-        let user_class_end = "&quot;]";
-
-        let mut result = String::new();
-        let mut last_end = 0;
-
-        for (start, part) in self.html.match_indices(user_class_start) {
-            let end_idx = self.html[start..self.html.len()].find(user_class_end);
-            result.push_str(&self.html[last_end..start]);
-
-            // We found a user defined class
-            if let Some(end) = end_idx {
-                let class_name = &self.html[start + user_class_start.len()..start + end];
-                let class_attr = format!(" class=\"{}\"", class_name);
-                // go to parent tag in the current html
-                if self.html[0..start].rfind('>').is_some() {
-                    // corresponding tag in the result string
-                    if let Some(open_tag_closing_in_result) = result.rfind('>') {
-                        let tag_to_insert = format!(" {}", class_attr);
-                        result.insert_str(open_tag_closing_in_result, &tag_to_insert);
-                    }
-
-                    // next start after the markdown extension class
-                    last_end = start + part.len() + class_name.len() + user_class_end.len();
-                }
-            } else {
-                eprintln!("Unmatched class attribute");
-            }
-        }
-
-        if last_end < self.html.len() {
-            result.push_str(&self.html[last_end..self.html.len()]);
-        }
-        self.html = result;
-    }
-
-    // This is just like String::replace implementation with index
-    fn insert_playpen_button(&mut self) {
-        let code_tag = r#"<code class="language-rust">"#;
-        let mut result = String::new();
-        let mut last_end = 0;
-        let mut count = 0;
-
-        for (start, part) in self.html.match_indices(code_tag) {
-            let code_block_id = format!("rust-code-block-{}", count);
-            let button = html! {
-                div(class="btn-code") {
-                    i(class="fas fa-copy btn-copy", onclick="clipboard(this.id)", id=&code_block_id);
-                    i(class="fas fa-play btn-playpen", onclick="play_playpen(this.id)", id=&code_block_id);
-                }
-            };
-            let insert = format!("{}{}", button.to_string(), code_tag);
-
-            result.push_str(&self.html[last_end..start]);
-            result.push_str(&insert);
-            last_end = start + part.len();
-            count += 1;
-        }
-        result.push_str(&self.html[last_end..self.html.len()]);
-        self.html = result;
-    }
-
     fn markdown_to_html(&mut self) {
         let mut html_ouput = String::new();
         let mut scss_output = String::new();
         self.markdown
             .iter()
-            .map(|content| Preprocessor::split_slylematters(content))
+            .map(|content| HtmlBuilder::split_slylematters(content))
             .enumerate()
             .map(|(idx, (stylematter, markdown))| {
                 let parser = Parser::new_ext(&markdown, Options::empty());
@@ -163,11 +103,13 @@ impl Preprocessor {
             .for_each(|(idx, html, stylematter)| {
                 let idx = &format!("unveil-slide-{}", idx);
 
+                // If there is a style matter block wrap the inner scss in the section id block
                 if let Some(stylematter) = stylematter {
                     let scss_block = &format!("#{} {{ {} }}", idx, stylematter);
                     scss_output.push_str(scss_block);
                 }
 
+                // push our slide sections to the body
                 html_ouput.push_str(&format!(
                     "{}",
                     html! {
@@ -184,7 +126,7 @@ impl Preprocessor {
         markdown: Vec<String>,
         live_reload: bool,
     ) -> Self {
-        Preprocessor {
+        HtmlBuilder {
             markdown,
             live_reload,
             html: String::new(),
@@ -195,20 +137,20 @@ impl Preprocessor {
 
 #[cfg(test)]
 mod tests {
-    use crate::html::Preprocessor;
+    use crate::html::HtmlBuilder;
 
     #[test]
     fn should_replace_custom_classes() {
-        let mut preprocessor = Preprocessor::new(vec![r#"[class="dummy"] Hello "#.into()], true);
+        let mut preprocessor = HtmlBuilder::new(vec![r#"[class="dummy"] Hello "#.into()], true);
 
         let output = preprocessor.build().unwrap();
 
-        assert!(output.1.contains(r#"<p  class="dummy"> Hello </p>"#));
+        assert!(output.1.contains(r#"<p class="dummy"> Hello </p>"#));
     }
 
     #[test]
     fn should_replace_do_nothing_if_no_custom_classes() {
-        let mut preprocessor = Preprocessor::new(vec!["Hello".into()], true);
+        let mut preprocessor = HtmlBuilder::new(vec!["Hello".into()], true);
 
         let output = preprocessor.build().unwrap();
 
