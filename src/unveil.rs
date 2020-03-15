@@ -33,7 +33,7 @@ use crate::{
     html::HtmlBuilder,
     server::Server,
 };
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 pub struct UnveilProject {
     pub root: PathBuf,
@@ -80,91 +80,95 @@ impl UnveilProject {
         let public = PathBuf::from("public");
 
         // Double check we are actually in an unveil project
-        let config = Path::new("unveil.toml");
+        let config = UnveilConfig::from_disk("unveil.toml")?;
+
+        // User has remove gitignore and we now need to recreate it
+        if config.gitignore {
+            helper::fs::write_file(".gitignore", b"public")?;
+        }
+
         if !public.exists() {
             std::fs::create_dir("public")?;
         }
 
-        if config.exists() {
-            helper::fs::replace("public/index.html", html.as_bytes())?;
-            helper::fs::write_file("public/unveil.js", JS)?;
+        helper::fs::replace("public/index.html", html.as_bytes())?;
+        helper::fs::write_file("public/unveil.js", JS)?;
 
-            if let Some(css) = user_css {
-                helper::fs::replace("public/user_css.css", css.as_bytes())?;
-            }
-
-            helper::fs::write_file("public/highlight.css", HIGHLIGHT_CSS)?;
-            helper::fs::write_file("public/livereload.js", LIVERELOAD_JS)?;
-            helper::fs::write_file("public/highlight.js", HIGHLIGHT_JS)?;
-
-            helper::fs::create_dir("public/fontawesome");
-            helper::fs::create_dir("public/fontawesome/webfonts");
-            helper::fs::create_dir("public/fontawesome/css");
-
-            helper::fs::write_file(
-                "public/fontawesome/webfonts/fa-regular-400.eot",
-                FONT_AWESOME_EOT,
-            )?;
-            helper::fs::write_file(
-                "public/fontawesome/webfonts/fa-regular-400.svg",
-                FONT_AWESOME_SVG,
-            )?;
-            helper::fs::write_file(
-                "public/fontawesome/webfonts/fa-regular-400.ttf",
-                FONT_AWESOME_TTF,
-            )?;
-            helper::fs::write_file(
-                "public/fontawesome/webfonts/fa-regular-400.woff",
-                FONT_AWESOME_WOFF,
-            )?;
-            helper::fs::write_file(
-                "public/fontawesome/webfonts/fa-regular-400.woff2",
-                FONT_AWESOME_WOFF2,
-            )?;
-
-            helper::fs::write_file(
-                "public/fontawesome/webfonts/fa-brands-400.eot",
-                FONT_AWESOME_EOT_BRANDS,
-            )?;
-            helper::fs::write_file(
-                "public/fontawesome/webfonts/fa-brands-400.svg",
-                FONT_AWESOME_SVG_BRANDS,
-            )?;
-            helper::fs::write_file(
-                "public/fontawesome/webfonts/fa-brands-400.ttf",
-                FONT_AWESOME_TTF_BRANDS,
-            )?;
-            helper::fs::write_file(
-                "public/fontawesome/webfonts/fa-brands-400.woff",
-                FONT_AWESOME_WOFF_BRANDS,
-            )?;
-            helper::fs::write_file(
-                "public/fontawesome/webfonts/fa-brands-400.woff2",
-                FONT_AWESOME_WOFF2_BRANDS,
-            )?;
-
-            helper::fs::write_file(
-                "public/fontawesome/webfonts/fa-solid-900.eot",
-                FONT_AWESOME_EOT_900,
-            )?;
-            helper::fs::write_file(
-                "public/fontawesome/webfonts/fa-solid-900.svg",
-                FONT_AWESOME_SVG_900,
-            )?;
-            helper::fs::write_file(
-                "public/fontawesome/webfonts/fa-solid-900.ttf",
-                FONT_AWESOME_TTF_900,
-            )?;
-            helper::fs::write_file(
-                "public/fontawesome/webfonts/fa-solid-900.woff",
-                FONT_AWESOME_WOFF_900,
-            )?;
-            helper::fs::write_file(
-                "public/fontawesome/webfonts/fa-solid-900.woff2",
-                FONT_AWESOME_WOFF2_900,
-            )?;
-            helper::fs::write_file("public/fontawesome/css/fontawesome.css", FONT_AWESOME)?;
+        if let Some(css) = user_css {
+            helper::fs::replace("public/user_css.css", css.as_bytes())?;
         }
+
+        helper::fs::write_file("public/highlight.css", HIGHLIGHT_CSS)?;
+        helper::fs::write_file("public/livereload.js", LIVERELOAD_JS)?;
+        helper::fs::write_file("public/highlight.js", HIGHLIGHT_JS)?;
+
+        helper::fs::create_dir("public/fontawesome");
+        helper::fs::create_dir("public/fontawesome/webfonts");
+        helper::fs::create_dir("public/fontawesome/css");
+
+        helper::fs::write_file(
+            "public/fontawesome/webfonts/fa-regular-400.eot",
+            FONT_AWESOME_EOT,
+        )?;
+        helper::fs::write_file(
+            "public/fontawesome/webfonts/fa-regular-400.svg",
+            FONT_AWESOME_SVG,
+        )?;
+        helper::fs::write_file(
+            "public/fontawesome/webfonts/fa-regular-400.ttf",
+            FONT_AWESOME_TTF,
+        )?;
+        helper::fs::write_file(
+            "public/fontawesome/webfonts/fa-regular-400.woff",
+            FONT_AWESOME_WOFF,
+        )?;
+        helper::fs::write_file(
+            "public/fontawesome/webfonts/fa-regular-400.woff2",
+            FONT_AWESOME_WOFF2,
+        )?;
+
+        helper::fs::write_file(
+            "public/fontawesome/webfonts/fa-brands-400.eot",
+            FONT_AWESOME_EOT_BRANDS,
+        )?;
+        helper::fs::write_file(
+            "public/fontawesome/webfonts/fa-brands-400.svg",
+            FONT_AWESOME_SVG_BRANDS,
+        )?;
+        helper::fs::write_file(
+            "public/fontawesome/webfonts/fa-brands-400.ttf",
+            FONT_AWESOME_TTF_BRANDS,
+        )?;
+        helper::fs::write_file(
+            "public/fontawesome/webfonts/fa-brands-400.woff",
+            FONT_AWESOME_WOFF_BRANDS,
+        )?;
+        helper::fs::write_file(
+            "public/fontawesome/webfonts/fa-brands-400.woff2",
+            FONT_AWESOME_WOFF2_BRANDS,
+        )?;
+
+        helper::fs::write_file(
+            "public/fontawesome/webfonts/fa-solid-900.eot",
+            FONT_AWESOME_EOT_900,
+        )?;
+        helper::fs::write_file(
+            "public/fontawesome/webfonts/fa-solid-900.svg",
+            FONT_AWESOME_SVG_900,
+        )?;
+        helper::fs::write_file(
+            "public/fontawesome/webfonts/fa-solid-900.ttf",
+            FONT_AWESOME_TTF_900,
+        )?;
+        helper::fs::write_file(
+            "public/fontawesome/webfonts/fa-solid-900.woff",
+            FONT_AWESOME_WOFF_900,
+        )?;
+        helper::fs::write_file(
+            "public/fontawesome/webfonts/fa-solid-900.woff2",
+            FONT_AWESOME_WOFF2_900,
+        )?;
+        helper::fs::write_file("public/fontawesome/css/fontawesome.css", FONT_AWESOME)?;
 
         // We don't overwrite CSS by default
         if !PathBuf::from("public/unveil.css").exists() {
@@ -189,6 +193,10 @@ impl UnveilProject {
         // Create slides dir
         std::fs::create_dir(project_name)?;
         std::fs::create_dir(&format!("{}/slides", project_name))?;
+
+        // Add default gitignore
+        let mut gitignore = File::create(&format!("{}/.gitignore", project_name))?;
+        gitignore.write_all(b"pubic")?;
 
         // Add a default example slides
         let mut landing = File::create(&format!("{}/slides/landing.md", project_name))?;

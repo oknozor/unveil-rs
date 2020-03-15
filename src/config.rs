@@ -7,6 +7,7 @@ pub struct UnveilConfig {
     language: String,
     pub slides: Vec<String>,
     pub user_theme: Option<String>,
+    pub gitignore: bool,
 }
 
 impl Default for UnveilConfig {
@@ -16,6 +17,7 @@ impl Default for UnveilConfig {
             language: "EN".to_string(),
             slides: vec!["landing.md".into()],
             user_theme: None,
+            gitignore: true,
         }
     }
 }

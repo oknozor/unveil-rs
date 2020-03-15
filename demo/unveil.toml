@@ -1,5 +1,6 @@
 name = "unveil demo"
 language = "EN"
+gitignore = true
 slides = ["landing.md",
  "slide.md",
  "slide-ordering.md",
