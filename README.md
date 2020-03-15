@@ -47,7 +47,7 @@ This will create the following directory structure :
 └── unveil.toml
 ```
 
-## Build and run
+### Build and run
 
 To build your project run : 
 ```shell script
