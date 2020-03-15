@@ -3,7 +3,6 @@ background-color: #4c566a;
 color: #eceff4;  
 
 h1 {
-    border-radius: 5px;
     color: #8fbcbb;
 }
 +++
@@ -19,7 +18,6 @@ background-color: #4c566a;
 color: #eceff4;  
 
 h1 {
-    border-radius: 5px;
     color: #8fbcbb;
 }
 +++
