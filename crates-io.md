@@ -1,9 +1,4 @@
-#  Unveil Rs [![Latest Version]][crates.io] [![Build Status]][travis]
-
-[Build Status]: https://travis-ci.com/oknozor/unveil-rs.svg?branch=master
-[travis]: https://travis-ci.com/oknozor/unveil-rs
-[Latest Version]: https://img.shields.io/crates/v/unveil-rs.svg
-[crates.io]: https://www.crates.io/crates/unveil-rs
+# Unveil Rs
 
 Unveil Rs is a tool to create presentations from markdown files.
 It is inspired by [reveal.js](https://github.com/hakimel/reveal.js) 
@@ -133,7 +128,3 @@ Unveil use hljs to generate pretty code snippet. Rust code can be played thanks 
 ## Contributions
 
 Unveil is at a very early stage of it's development and any help is welcome. 
-
-
-
-
