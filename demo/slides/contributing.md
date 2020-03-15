@@ -4,15 +4,22 @@
     display: flex;
 }
 
-.social-links a {
-    margin: 0.5em;
-    fab {
-        .fa-twitter {
-            color: #1da1f2;
-        }
-        .fa-github {
-            color: black;
-        }
+.social-links {
+    a {
+        margin: 0.5em;
+    }
+    a.fab:nth-child(2) {
+        color: #1da1f2;
+    }
+   
+    a.fab:nth-child(2):visited {
+        color: #1da1f2;
+    }
+    a.fab:nth-child(1) {
+        color: black;
+    }
+    a.fab:nth-child(1):visited {
+        color: #black;
     }
 }
 +++

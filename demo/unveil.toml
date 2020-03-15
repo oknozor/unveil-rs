@@ -1,10 +1,9 @@
 name = "unveil demo"
 language = "EN"
-slides = [
-    "landing.md",
-    "slide.md",
-    "scss.md",
-    "slide-ordering.md",
-    "contributing.md",
-    "fontawesome.md"
+slides = ["landing.md",
+ "slide.md",
+ "slide-ordering.md",
+ "scss.md",
+ "markdown-ext.md",
+ "contributing.md"
 ]
