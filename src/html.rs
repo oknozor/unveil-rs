@@ -204,7 +204,7 @@ mod tests {
 
         let output = preprocessor.build().unwrap();
 
-        assert!(output.1.contains(r#"<p class="dummy"> Hello </p>"#));
+        assert!(output.1.contains(r#"<p  class="dummy"> Hello </p>"#));
     }
 
     #[test]
@@ -214,53 +214,5 @@ mod tests {
         let output = preprocessor.build().unwrap();
 
         assert!(output.1.contains("<p>Hello</p>"));
-    }
-
-    #[test]
-    fn should_no() {
-        let md = r#"[class="social-links"]
-[[class="fab fa-github fa-2x"]](https://github.com/oknozor/unveil-rs)
-[*[class="fab fa-twitter fa-2x"]*](https://twitter.com/AfkTartine)"#;
-
-        let mut preprocessor = Preprocessor::new(vec![md.into()], true);
-
-        let output = preprocessor.build().unwrap();
-
-        assert_eq!(output.1, "<p>Hello</p>");
-    }
-
-    // TODO : we probably need to get better assertions here
-    // #[test]
-    fn should_append_playpen_button() {
-        let markdown = vec![r#"
-```rust
-let a = 1;
-```
-"#
-            .to_owned()];
-
-        let mut preprocessor = Preprocessor::new(markdown, true);
-
-        let html = preprocessor.build();
-    }
-
-    // #[test]
-    fn should_append_playpen_buttons() {
-        let markdown = vec![
-            r#"
-```rust
-let a = 1;
-```"#
-                .to_owned(),
-            r#"```rust
-let b = 2;
-```
-        "#
-                .to_owned(),
-        ];
-
-        let mut preprocessor = Preprocessor::new(markdown, true);
-
-        let html = preprocessor.build();
     }
 }
