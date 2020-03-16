@@ -11,11 +11,10 @@ impl Preprocessor {
         let mut count = 0;
 
         for (start, part) in html.match_indices(RUST_CODE_TAG) {
-            let code_block_id = format!("rust-code-block-{}-clip", count);
-            let code_block_copy_btn_id = format!("rust-code-block-{}", count);
+            let code_block_id = format!("rust-code-block-{}", count);
             let button = html! {
                 div(class="btn-code") {
-                    i(class="fas fa-copy bounce-in btn-copy", id=&code_block_copy_btn_id);
+                    i(class="fas fa-copy bounce-in btn-copy", id=&code_block_id);
                     i(class="fas fa-play btn-playpen", onclick="play_playpen(this.id)", id=&code_block_id);
                 }
             };
@@ -77,7 +76,7 @@ pub mod test {
 
         let expected = html! {
                 div(class="btn-code") {
-                    i(class="fas fa-copy btn-copy", id="rust-code-block-0");
+                    i(class="fas fa-copy bounce-in btn-copy", id="rust-code-block-0");
                     i(class="fas fa-play btn-playpen", onclick="play_playpen(this.id)", id="rust-code-block-0");
                 }
                 code(class="language-rust") {
@@ -99,7 +98,7 @@ pub mod test {
 
         let expected = html! {
                 div(class="btn-code") {
-                    i(class="fas fa-copy btn-copy", id="rust-code-block-0-clip");
+                    i(class="fas fa-copy bounce-in btn-copy", id="rust-code-block-0");
                     i(class="fas fa-play btn-playpen", onclick="play_playpen(this.id)", id="rust-code-block-0");
                 }
                 code(class="language-rust") {
@@ -107,7 +106,7 @@ pub mod test {
                 }
                 p { : "Foo"}
                 div(class="btn-code") {
-                    i(class="fas fa-copy btn-copy", id="rust-code-block-1-clip");
+                    i(class="fas fa-copy bounce-in btn-copy", id="rust-code-block-1");
                     i(class="fas fa-play btn-playpen", onclick="play_playpen(this.id)", id="rust-code-block-1");
                 }
                 code(class="language-rust") {
