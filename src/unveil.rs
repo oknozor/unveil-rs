@@ -13,6 +13,7 @@ use crate::{
 
 use crate::{
     assets::{
+        CLIPBOARD_JS,
         FONT_AWESOME,
         FONT_AWESOME_EOT,
         FONT_AWESOME_EOT_900,
@@ -100,6 +101,7 @@ impl UnveilProject {
 
         helper::fs::write_file("public/highlight.css", HIGHLIGHT_CSS)?;
         helper::fs::write_file("public/livereload.js", LIVERELOAD_JS)?;
+        helper::fs::write_file("public/clipboard.js", CLIPBOARD_JS)?;
         helper::fs::write_file("public/highlight.js", HIGHLIGHT_JS)?;
 
         helper::fs::create_dir("public/fontawesome");

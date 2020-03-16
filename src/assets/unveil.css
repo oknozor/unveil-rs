@@ -77,7 +77,7 @@ li > code.hljs , p > code.hljs {
 
 /* https://github.com/IanLunn/Hover/blob/master/css/hover.css */
 /* Bounce In */
-.hvr-bounce-in {
+.bounce-in {
     display: inline-block;
     vertical-align: middle;
     -webkit-transform: perspective(1px) translateZ(0);
@@ -86,12 +86,13 @@ li > code.hljs , p > code.hljs {
     -webkit-transition-duration: 0.5s;
     transition-duration: 0.5s;
 }
-.hvr-bounce-in:hover, .hvr-bounce-in:focus, .hvr-bounce-in:active {
+.bounce-in-active {
     -webkit-transform: scale(1.2);
     transform: scale(1.2);
     -webkit-transition-timing-function: cubic-bezier(0.47, 2.02, 0.31, -0.36);
     transition-timing-function: cubic-bezier(0.47, 2.02, 0.31, -0.36);
 }
+
 
 
 
