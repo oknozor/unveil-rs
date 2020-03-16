@@ -59,11 +59,11 @@ impl HtmlBuilder {
                     }
                 }
                 body {
-                   div(onclick="next_slide_right()", class="arrow-right") {
+                   div(onclick="next_slide_right()", class="arrow-right hvr-bounce-in") {
                        i(class="fas fa-chevron-right");
                    }
 
-                   div(onclick="next_slide_left()", class="arrow-left") {
+                   div(onclick="next_slide_left()", class="arrow-left hvr-bounce-in") {
                         i(class="fas fa-chevron-left");
                    }
                    : Raw(&self.html)
