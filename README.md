@@ -94,11 +94,11 @@ language = "EN"
 slides = ["landing.md", "myslide.md"]
 ```
 
-4. Adding style to your slides
+### Adding style to your slides
 
 Inspired by [zola's frontmatter](https://www.getzola.org/documentation/content/page/#front-matter) unveil slides can be 
 styled with a style matter block. The Sass style matter is a style attached to the current slide embedded in a file at the beginning of 
-the file enclosed by triple pluses (+++). The opening and closing +++ are optional.
+the file enclosed by triple pluses (+++). If your slide does not have additional styling, the opening and closing +++ are optional.
 
 Example : 
 ```markdown 
@@ -115,7 +115,7 @@ h1 {
 I am white and my background is black
 ```
 
-5. Hljs
+### Hljs
 
 Unveil use hljs to generate pretty code snippet. Rust code can be played thanks to [the rust playground project](https://play.integer32.com/help).
 
