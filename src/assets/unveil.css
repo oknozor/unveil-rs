@@ -64,7 +64,6 @@ li > code.hljs , p > code.hljs {
     right: 0;
 }
 
-
 .btn-code {
     top: 0;
     margin-top: 0.2rem;
@@ -91,6 +90,38 @@ li > code.hljs , p > code.hljs {
     transform: scale(1.2);
     -webkit-transition-timing-function: cubic-bezier(0.47, 2.02, 0.31, -0.36);
     transition-timing-function: cubic-bezier(0.47, 2.02, 0.31, -0.36);
+}
+    
+.zoom-in {
+    transition: transform .5s;
+    margin: 0 auto;
+    transform: scale(1.25);
+}
+
+.zoom-out {
+    transition: transform .5s; 
+    margin: 0 auto;
+    transform: scale(0.75);
+}
+
+.fade-out {
+    animation: fadeout 1.5s linear 1 forwards;
+}
+
+.fade-in {
+    animation: fadein 1.5s linear 1 forwards;
+}
+
+@keyframes fadein {
+    0% { opacity: 0; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+@keyframes fadeout {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 0; }
 }
 
 

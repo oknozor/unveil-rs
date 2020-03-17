@@ -39,17 +39,23 @@ const get_slide = (idx) => {
 
 const next_slide_right = () => {
     let slide = get_slide(current_slide + 1);
+    let curr_slide = get_slide(current_slide);
     if (slide) {
         current_slide++;
         smooth_scroll(slide);
+        zoom_transition(curr_slide, "out");
+        zoom_transition(slide, "in");
     }
 };
 
 const next_slide_left = () => {
+    let curr_slide = get_slide(current_slide);
     if (current_slide >= 1) {
         current_slide--;
         let slide = get_slide(current_slide);
         smooth_scroll(slide);
+        zoom_transition(curr_slide, "out");
+        zoom_transition(slide, "in");
     }
 };
 
@@ -57,6 +63,35 @@ const smooth_scroll = (el) => {
     el.scrollIntoView({behavior: "smooth"});
 };
 
+const zoom_transition = (el, mode) => {
+    if (mode === "in") {
+        el.classList.add('zoom-in');
+        el.addEventListener('transitionend', function(){
+            el.classList.remove('zoom-in');
+        }, false);
+    } else {
+        el.classList.add('zoom-out');
+        el.addEventListener('transitionend', function(){
+            el.classList.remove('zoom-out');
+        }, false); 
+    }
+};
+
+const fade_transition = (el, mode) => {
+    if (mode === "in") {
+        el.classList.add('fade-in');
+        el.addEventListener('animationend', function(){
+            el.classList.remove('fade-in');
+            console.log('test');
+        }, false);
+    } else {
+        el.classList.add('fade-out');
+        el.addEventListener('animationend', function(){
+            el.classList.remove('fade-out');
+            console.log('test');
+        }, false); 
+    }
+};
 
 const timeout = (promise) => {
     return new Promise((resolve, reject) => {
@@ -109,6 +144,7 @@ const fetch_with_timeout = (code, url) => {
 
     return timeout(fetch_playpen)
 };
+<<<<<<< HEAD
 
 let clipboard = new ClipboardJS('.btn-copy');
 
@@ -117,3 +153,5 @@ clipboard.on('success', function(e) {
     setTimeout(() => e.trigger.classList.remove("bounce-in-active"), 300);
     e.clearSelection();
 });
+=======
+>>>>>>> feat: added CSS animation for slide transition
