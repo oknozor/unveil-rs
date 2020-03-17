@@ -14,7 +14,7 @@ impl Preprocessor {
             let code_block_id = format!("rust-code-block-{}", count);
             let button = html! {
                 div(class="btn-code") {
-                    i(class="fas fa-copy btn-copy", onclick="clipboard(this.id)", id=&code_block_id);
+                    i(class="fas fa-copy bounce-in btn-copy", id=&code_block_id);
                     i(class="fas fa-play btn-playpen", onclick="play_playpen(this.id)", id=&code_block_id);
                 }
             };
@@ -76,7 +76,7 @@ pub mod test {
 
         let expected = html! {
                 div(class="btn-code") {
-                    i(class="fas fa-copy btn-copy", onclick="clipboard(this.id)", id="rust-code-block-0");
+                    i(class="fas fa-copy bounce-in btn-copy", id="rust-code-block-0");
                     i(class="fas fa-play btn-playpen", onclick="play_playpen(this.id)", id="rust-code-block-0");
                 }
                 code(class="language-rust") {
@@ -98,7 +98,7 @@ pub mod test {
 
         let expected = html! {
                 div(class="btn-code") {
-                    i(class="fas fa-copy btn-copy", onclick="clipboard(this.id)", id="rust-code-block-0");
+                    i(class="fas fa-copy bounce-in btn-copy", id="rust-code-block-0");
                     i(class="fas fa-play btn-playpen", onclick="play_playpen(this.id)", id="rust-code-block-0");
                 }
                 code(class="language-rust") {
@@ -106,7 +106,7 @@ pub mod test {
                 }
                 p { : "Foo"}
                 div(class="btn-code") {
-                    i(class="fas fa-copy btn-copy", onclick="clipboard(this.id)", id="rust-code-block-1");
+                    i(class="fas fa-copy bounce-in btn-copy", id="rust-code-block-1");
                     i(class="fas fa-play btn-playpen", onclick="play_playpen(this.id)", id="rust-code-block-1");
                 }
                 code(class="language-rust") {

@@ -50,23 +50,24 @@ impl HtmlBuilder {
                     }
                     link(rel="stylesheet", href="highlight.css");
                     link(rel="stylesheet", href="fontawesome/css/fontawesome.css");
-                    script(src="highlight.js");
-                    script(src="unveil.js");
-                    |tmpl| {
-                        if self.live_reload {
-                            tmpl << html !(script(src="livereload.js"));
-                        }
-                    }
                 }
                 body {
-                   div(onclick="next_slide_right()", class="arrow-right") {
+                   div(onclick="next_slide_right()", class="arrow-right bounce-in") {
                        i(class="fas fa-chevron-right");
                    }
 
-                   div(onclick="next_slide_left()", class="arrow-left") {
+                   div(onclick="next_slide_left()", class="arrow-left bounce-in") {
                         i(class="fas fa-chevron-left");
                    }
-                   : Raw(&self.html)
+                   : Raw(&self.html);
+                   script(src="highlight.js");
+                   script(src="clipboard.js");
+                   script(src="unveil.js");
+                   |tmpl| {
+                       if self.live_reload {
+                         tmpl << html !(script(src="livereload.js"));
+                       }
+                   }
                 }
             }
         };

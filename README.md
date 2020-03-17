@@ -67,12 +67,14 @@ This command generate the following files :
 │   │   │   └── fontawesome.css
 │   │   └── webfonts
 │   │       ├── (...)
+│   ├── clipboard.js
 │   ├── highlight.css
 │   ├── highlight.js
 │   ├── index.html
 │   ├── livereload.js
 │   ├── unveil.css
 │   └── unveil.js
+│   └── user_css.css
 ├── slides
 │   └── landing.md
 └── unveil.toml
@@ -83,7 +85,7 @@ project root directory. This will build the static site and start serving it on 
 
 From this point you can start editing your markdown slides. The site will reload as you edit it. 
 
-### Adding new slides
+### Add new slides
 
 To add a slide run `unveil new myslide` inside your project root directory. it will create a new markdown file 
 `myslide.md` in the `slides/` directory and add a slide entry in the `unveil.toml` config file. 
@@ -91,14 +93,15 @@ To add a slide run `unveil new myslide` inside your project root directory. it w
 ```toml
 name = "mypresentation"
 language = "EN"
+gitignore = true
 slides = ["landing.md", "myslide.md"]
 ```
 
-4. Adding style to your slides
+### Add style to your slides
 
 Inspired by [zola's frontmatter](https://www.getzola.org/documentation/content/page/#front-matter) unveil slides can be 
 styled with a style matter block. The Sass style matter is a style attached to the current slide embedded in a file at the beginning of 
-the file enclosed by triple pluses (+++). The opening and closing +++ are optional.
+the file enclosed by triple pluses (+++). If your slide does not have additional styling, the opening and closing +++ are optional.
 
 Example : 
 ```markdown 
@@ -115,7 +118,7 @@ h1 {
 I am white and my background is black
 ```
 
-5. Hljs
+### Hljs
 
 Unveil use hljs to generate pretty code snippet. Rust code can be played thanks to [the rust playground project](https://play.integer32.com/help).
 
