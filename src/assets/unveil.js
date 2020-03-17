@@ -57,12 +57,12 @@ const smooth_scroll = (el) => {
 const zoom_transition = (el, mode) => {
     if (mode === "in") {
         el.classList.add('zoom-in');
-        el.addEventListener('webkitTransitionEnd', function(){
+        el.addEventListener('transitionend', function(){
             el.classList.remove('zoom-in');
         }, false);
     } else {
         el.classList.add('zoom-out');
-        el.addEventListener('webkitTransitionEnd', function(){
+        el.addEventListener('transitionend', function(){
             el.classList.remove('zoom-out');
         }, false); 
     }
