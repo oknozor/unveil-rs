@@ -144,7 +144,6 @@ const fetch_with_timeout = (code, url) => {
 
     return timeout(fetch_playpen)
 };
-<<<<<<< HEAD
 
 let clipboard = new ClipboardJS('.btn-copy');
 
@@ -153,5 +152,3 @@ clipboard.on('success', function(e) {
     setTimeout(() => e.trigger.classList.remove("bounce-in-active"), 300);
     e.clearSelection();
 });
-=======
->>>>>>> feat: added CSS animation for slide transition
