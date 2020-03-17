@@ -64,7 +64,6 @@ li > code.hljs , p > code.hljs {
     right: 0;
 }
 
-
 .btn-code {
     top: 0;
     margin-top: 0.2rem;
@@ -73,6 +72,18 @@ li > code.hljs , p > code.hljs {
 
 .btn-code > i {
     margin-left: 0.5em;
+}
+
+.zoom-in {
+    transition: transform .5s;
+    margin: 0 auto;
+    transform: scale(1.25);
+}
+
+.zoom-out {
+    transition: transform .5s; 
+    margin: 0 auto;
+    transform: scale(0.75);
 }
 
 
