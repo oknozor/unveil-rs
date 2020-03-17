@@ -86,6 +86,27 @@ li > code.hljs , p > code.hljs {
     transform: scale(0.75);
 }
 
+.fade-out {
+    animation: fadeout 1.5s linear 1 forwards;
+}
+
+.fade-in {
+    animation: fadein 1.5s linear 1 forwards;
+}
+
+@keyframes fadein {
+    0% { opacity: 0; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+@keyframes fadeout {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 0; }
+}
+
+
 
 
 

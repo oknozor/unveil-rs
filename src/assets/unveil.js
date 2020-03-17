@@ -68,6 +68,21 @@ const zoom_transition = (el, mode) => {
     }
 };
 
+const fade_transition = (el, mode) => {
+    if (mode === "in") {
+        el.classList.add('fade-in');
+        el.addEventListener('animationend', function(){
+            el.classList.remove('fade-in');
+            console.log('test');
+        }, false);
+    } else {
+        el.classList.add('fade-out');
+        el.addEventListener('animationend', function(){
+            el.classList.remove('fade-out');
+            console.log('test');
+        }, false); 
+    }
+};
 
 const timeout = (promise) => {
     return new Promise((resolve, reject) => {
