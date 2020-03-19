@@ -135,7 +135,13 @@ Unveil use hljs to generate pretty code snippet. Rust code can be played thanks 
 
 ## Contributions
 
-Unveil is at a very early stage of it's development and any help is welcome. 
+Unveil is at a very early stage of it's development and any help is welcome. If you want to participate read the 
+[contributing guidelines](CONTRIBUTING.MD) and pick an [issue](https://github.com/oknozor/unveil-rs/issues)! 
+
+## Getting Help 
+
+Need help ? You can contact us via our [matrix channel](https://riot.im/app/#/room/#unveil-rs:matrix.org) or ask a question
+on the [issue tracker](https://github.com/oknozor/unveil-rs/issues).
 
 
 
