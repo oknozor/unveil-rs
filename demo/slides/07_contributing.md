@@ -5,21 +5,13 @@
 }
 
 .social-links {
-    a {
+    a, a:visited {
+        color: black;
         margin: 0.5em;
     }
-    a.fab:nth-child(2) {
-        color: #1da1f2;
-    }
-   
-    a.fab:nth-child(2):visited {
-        color: #1da1f2;
-    }
-    a.fab:nth-child(1) {
-        color: black;
-    }
-    a.fab:nth-child(1):visited {
-        color: #black;
+    
+    a.fa-twitter, a.fa-twitter:visited {
+                color: #1da1f2;
     }
 }
 +++
@@ -31,3 +23,4 @@ If you want to help please visit us on and pick and issue or contact me on twitt
 [class="social-links"]
 [[class="fab fa-github fa-2x"]](https://github.com/oknozor/unveil-rs)
 [[class="fab fa-twitter fa-2x"]](https://twitter.com/AfkTartine)
+[[class="fas fa-comments fa-2x"]](https://riot.im/app/#/room/#unveil-rs:matrix.org)
