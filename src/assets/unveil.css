@@ -44,7 +44,7 @@ article {
     align-items: center;
 }
 
-li > code.hljs , p > code.hljs {
+li > code.hljs, p > code.hljs {
     display: inline;
     padding: 2px;
 }
@@ -63,7 +63,6 @@ li > code.hljs , p > code.hljs {
 .arrow-right {
     right: 0;
 }
-
 
 .btn-code {
     top: 0;
@@ -86,12 +85,40 @@ li > code.hljs , p > code.hljs {
     -webkit-transition-duration: 0.5s;
     transition-duration: 0.5s;
 }
+
 .bounce-in-active {
     -webkit-transform: scale(1.2);
     transform: scale(1.2);
     -webkit-transition-timing-function: cubic-bezier(0.47, 2.02, 0.31, -0.36);
     transition-timing-function: cubic-bezier(0.47, 2.02, 0.31, -0.36);
 }
+
+section {
+    transition: all .3s cubic-bezier(.22, .5, .17, .65);
+}
+
+.zoom-in {
+    animation: zoomin;
+    animation-duration: 0.7s;
+    animation-timing-function: cubic-bezier(.27,.52,.72,.93);
+}
+
+.fade-in {
+    animation: fadein;
+    animation-duration: 1s;
+    animation-timing-function: cubic-bezier(.22, .5, .17, .65);
+}
+
+@keyframes zoomin {
+    0% { transform: scale(1.5); }
+    100% { transform: scale(1.0); }
+}
+
+@keyframes fadein {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
 
 
 

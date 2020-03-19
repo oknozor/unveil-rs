@@ -38,25 +38,43 @@ const get_slide = (idx) => {
 };
 
 const next_slide_right = () => {
-    let slide = get_slide(current_slide + 1);
-    if (slide) {
+    let curr_slide = get_slide(current_slide);
+    let right = get_slide(current_slide + 1);
+    if (right) {
         current_slide++;
-        smooth_scroll(slide);
+        transition_and_scroll(curr_slide, right)
     }
 };
 
 const next_slide_left = () => {
-    if (current_slide >= 1) {
+    let curr_slide = get_slide(current_slide);
+    let left = get_slide(current_slide - 1);
+    if (left) {
         current_slide--;
-        let slide = get_slide(current_slide);
-        smooth_scroll(slide);
+        transition_and_scroll(curr_slide, left);
     }
 };
 
-const smooth_scroll = (el) => {
-    el.scrollIntoView({behavior: "smooth"});
-};
+const transition_and_scroll = (current_slide, target_slide) => {
+    let transition_kind = getComputedStyle(target_slide).getPropertyValue("--on-enter-animation").trim();
+    if (transition_kind) {
+        // Second handler the new slide has finished transitioning
+        const target_animation_end_handler = () => {
+            console.log('target end');
+            // clean up
+            target_slide.removeEventListener('animationend', target_animation_end_handler);
+            target_slide.classList.remove(transition_kind);
+        };
 
+        target_slide.addEventListener('animationend', target_animation_end_handler);
+
+        target_slide.scrollIntoView({behavior: "smooth"});
+        target_slide.classList.add(transition_kind);
+
+    } else { // No transition animation
+        target_slide.scrollIntoView({behavior: "smooth"});
+    }
+};
 
 const timeout = (promise) => {
     return new Promise((resolve, reject) => {
@@ -112,7 +130,7 @@ const fetch_with_timeout = (code, url) => {
 
 let clipboard = new ClipboardJS('.btn-copy');
 
-clipboard.on('success', function(e) {
+clipboard.on('success', function (e) {
     e.trigger.classList.add("bounce-in-active");
     setTimeout(() => e.trigger.classList.remove("bounce-in-active"), 300);
     e.clearSelection();

@@ -1,3 +1,7 @@
++++
+--on-enter-animation: fade-in
++++
+
 # Display your code
 
 ```rust

@@ -1,4 +1,8 @@
-# Markdown extention 
++++
+--on-enter-animation: zoom-in
++++
+
+# Markdown extension 
 
 Unveil add a single feature to the markdown spec. You can add a class to a markdown
 element with the \[class="my-class"\] attribute.
