@@ -11,11 +11,17 @@ description = """
 Unveil Rs is a tool to create presentations from markdown files.
 """
 
+[badges]
 travis-ci = { repository = "oknozor/unveil-rs", branch = "master" }
 
 [[bin]]
 name = "unveil"
 path = "src/main.rs"
+[target.arm-unknown-linux-gnueabihf]
+linker = "arm-linux-gnueabihf-gcc"
+
+[target.aarch64-linux-gnu]
+linker = "aarch64-linux-gnu-gcc"
 
 [features]
 default = ["unveil-cli"]
