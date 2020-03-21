@@ -1,6 +1,5 @@
 ---
 language: rust
-cache: cargo
 
 matrix:
   include:
@@ -21,6 +20,17 @@ matrix:
     - os: osx
       rust: 1.40.0
       env: TARGET=x86_64-apple-darwin
+
+    # Run release jobs
+    - os: linux
+      rust: stable
+      env: TARGET=x86_64-unknown-linux-gnu DEPLOY_TARGET=github-pages
+      if: tag IS present
+
+    - os: linux
+      rust: stable
+      env: TARGET=x86_64-unknown-linux-gnu DEPLOY_TARGET=cargo-publish
+      if: tag IS present
 
 sudo: required
 
@@ -43,49 +53,44 @@ script:
   - ci/build.sh
 
 before_deploy:
-  - bash ci/before_deploy.sh
+  - ci/before_deploy.sh
 
 deploy:
   - provider: releases
-    token: $GITHUB_TOKEN
+    api_key: $GITHUB_TOKEN
     # for uploading multiple files
     file_glob: true
-    # NOTE explanation on each env variable
-    # - PROJECT_NAME: name of the project, set on the `env.global` above
-    # - TRAVIS_TAG: tag name that the build is being deployed for, usually the version number
-    # - TARGET: target triple of the build
     file:
       - $PROJECT_NAME-$TRAVIS_TAG-$TARGET.*
       - $PROJECT_NAME*.deb
     # don't delete artifacts from previous stage
     skip_cleanup: true
+
     on:
       # deploy only if we push a tag
       tags: true
-      # deploy only on stable channel that has TARGET env variable sets
-      condition: $TRAVIS_RUST_VERSION = stable && $TARGET != ""
+      # deploy only on stable channel that has TARGET env variable sets and excludes other release jobs
+      condition: $DEPLOY_TARGET != cargo-publish && $DEPLOY_TARGET != github-pages
 
   - provider: pages
-    cleanup: false
-    token: $GITHUB_TOKEN
+    skip_cleanup: true
+    github_token: $GITHUB_TOKEN
     local_dir: demo/public
     keep_history: false
     on:
       # deploy only if we push a tag
       tags: true
       # deploy to github pages only once when targeting x86_64-unknown-linux-gnu
-      condition: $TRAVIS_RUST_VERSION = stable && $TARGET == $HOST
+      condition: $DEPLOY_TARGET == github-pages
 
   - provider: cargo
+    skip_cleanup: true
     token: $CARGO_TOKEN
     on:
       # deploy only if we push a tag
       tags: true
       # publish on crates.io only once when targeting x86_64-unknown-linux-gnu
-      condition: $TRAVIS_RUST_VERSION = stable && $TARGET == $HOST
-
-before_cache:
-  - rm -rf "$TRAVIS_HOME/.cargo/registry/src"
+      condition: $DEPLOY_TARGET == cargo-publish
 
 notifications:
   email:

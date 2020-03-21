@@ -8,10 +8,19 @@ if [[ -z "$PROJECT_NAME" ]]; then
 fi
 
 build() {
+    echo "Building unveil for target arch $TARGET"
     cargo build --bin unveil --target "$TARGET" --release --verbose
 }
 
+build_pages() {
+    echo "Building unveil demo project before publishing to github pages"
+    cd demo
+    cargo run --target "$TARGET" --release -- build
+    cd ..
+}
+
 pack() {
+    echo "Packaging release files and .deb"
     local tempdir
     local out_dir
     local package_name
@@ -130,10 +139,19 @@ EOF
 
 
 main() {
-    build
-    pack
-    if [[ $TARGET = *linux* ]]; then
-      make_deb
+    # This is a very hacky way to bypass travis deploy lifecycle limitation
+    # We shall find a better way
+
+    if [[ $DEPLOY_TARGET == "github-pages" ]]; then
+      build_pages
+    fi
+
+    if [[ $DEPLOY_TARGET == "github-pages" && $DEPLOY_TARGET == "cargo-publish" ]]; then
+      build
+      pack
+      if [[ $TARGET = *linux* ]]; then
+        make_deb
+      fi
     fi
 }
 
