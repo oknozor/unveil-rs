@@ -1,6 +1,5 @@
 ---
 language: rust
-cache: cargo
 
 matrix:
   include:
@@ -43,11 +42,11 @@ script:
   - ci/build.sh
 
 before_deploy:
-  - bash ci/before_deploy.sh
+  - ci/before_deploy.sh
 
 deploy:
   - provider: releases
-    token: $GITHUB_TOKEN
+    api_key: $GITHUB_TOKEN
     # for uploading multiple files
     file_glob: true
     # NOTE explanation on each env variable
@@ -59,6 +58,8 @@ deploy:
       - $PROJECT_NAME*.deb
     # don't delete artifacts from previous stage
     skip_cleanup: true
+    before_script: ci/before_deploy.sh
+
     on:
       # deploy only if we push a tag
       tags: true
@@ -66,8 +67,8 @@ deploy:
       condition: $TRAVIS_RUST_VERSION = stable && $TARGET != ""
 
   - provider: pages
-    cleanup: false
-    token: $GITHUB_TOKEN
+    skip_cleanup: true
+    github_token: $GITHUB_TOKEN
     local_dir: demo/public
     keep_history: false
     on:
@@ -77,15 +78,13 @@ deploy:
       condition: $TRAVIS_RUST_VERSION = stable && $TARGET == $HOST
 
   - provider: cargo
+    skip_cleanup: true
     token: $CARGO_TOKEN
     on:
       # deploy only if we push a tag
       tags: true
       # publish on crates.io only once when targeting x86_64-unknown-linux-gnu
       condition: $TRAVIS_RUST_VERSION = stable && $TARGET == $HOST
-
-before_cache:
-  - rm -rf "$TRAVIS_HOME/.cargo/registry/src"
 
 notifications:
   email:
