@@ -1,0 +1,18 @@
+#unveil-slide-1 .social-links {
+  justify-content: center;
+  display: flex; }
+
+#unveil-slide-1 .social-links a {
+  margin: 0.5em; }
+
+#unveil-slide-1 .social-links a.fab:nth-child(2) {
+  color: #1da1f2; }
+
+#unveil-slide-1 .social-links a.fab:nth-child(2):visited {
+  color: #1da1f2; }
+
+#unveil-slide-1 .social-links a.fab:nth-child(1) {
+  color: black; }
+
+#unveil-slide-1 .social-links a.fab:nth-child(1):visited {
+  color: #black; }

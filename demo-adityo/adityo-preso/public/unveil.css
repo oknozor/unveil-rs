@@ -1,0 +1,118 @@
+html {
+    background-color: white;
+    font-size: xx-large;
+    margin: 0;
+    overflow: hidden;
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-items: center;
+}
+
+section {
+    display: flex;
+    flex: 0 0 auto;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    transition: transform .5s;
+}
+
+article {
+    margin-top: 5%;
+    width: 75%;
+}
+
+article h1 {
+    font-size: 2.5rem;
+}
+
+article h2 {
+    margin-left: 0.5em;
+}
+
+p, ul, ol {
+    margin-left: 1em;
+}
+
+article {
+    justify-content: center;
+    align-items: center;
+}
+
+li > code.hljs , p > code.hljs {
+    display: inline;
+    padding: 2px;
+}
+
+h1 {
+    @extend .myclass;
+}
+
+.arrow-left, .arrow-right {
+    margin: 1em;
+    width: 35px;
+    position: fixed;
+    top: 50%;
+}
+
+.arrow-left {
+    left: 0;
+}
+
+.arrow-right {
+    right: 0;
+}
+
+.btn-code-container {
+    position: relative;
+    width: 100%;
+}
+
+.btn-code {
+    position: absolute;
+    right: 0.4rem;
+}
+
+.btn-code > i {
+    margin-left: 0.7em;
+    font-size: 0.4rem;
+    color: #606060
+}
+
+.zoom-in {
+    transition: transform .5s;
+    margin: 0 auto;
+    transform: scale(1.25);
+}
+
+.zoom-out {
+    transition: transform .5s; 
+    margin: 0 auto;
+    transform: scale(0.75);
+}
+
+.fade-out {
+    animation: fadeout 1.5s linear 1 forwards;
+}
+
+.fade-in {
+    animation: fadein 1.5s linear 1 forwards;
+}
+
+@keyframes fadein {
+    0% { opacity: 0; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+@keyframes fadeout {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 0; }
+}

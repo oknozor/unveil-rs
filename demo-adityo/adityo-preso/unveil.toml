@@ -1,0 +1,4 @@
+name = "unveil"
+language = "EN"
+slides = ["landing.md", "slide.md"]
+gitignore = true
