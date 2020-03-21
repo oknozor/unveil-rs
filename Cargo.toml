@@ -1,6 +1,6 @@
 [package]
 name = "unveil-rs"
-version = "0.1.1-alpha1"
+version = "0.1.2-alpha1"
 authors = ["Paul Delafosse <paul.delafosse@protonmail.com>"]
 edition = "2018"
 license = "MIT"
@@ -17,11 +17,6 @@ travis-ci = { repository = "oknozor/unveil-rs", branch = "master" }
 [[bin]]
 name = "unveil"
 path = "src/main.rs"
-[target.arm-unknown-linux-gnueabihf]
-linker = "arm-linux-gnueabihf-gcc"
-
-[target.aarch64-linux-gnu]
-linker = "aarch64-linux-gnu-gcc"
 
 [features]
 default = ["unveil-cli"]
