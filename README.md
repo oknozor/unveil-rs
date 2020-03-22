@@ -118,6 +118,27 @@ h1 {
 I am white and my background is black
 ```
 
+### Custom CSS properties 
+
+Unveil use some custom CSS properties to help you design your slides.
+
+For example you can add transition on slides using the `--on-enter-animation` CSS property on your slide's stylematter :
+
+```markdown
++++
+--on-enter-animation: zoom-in
++++
+# I will zoom in on enter
+```
+
+#### Available custom CSS properties
+
+| name                  |   allowed values                    | status       |  
+| :---                  | :---                                |  implemented |
+|`--on-enter-animation` | `fade-in`, `zoom-in`
+
+If you want to see more custom properties and transitions in unveil, please let us know ! 
+
 ### Hljs
 
 Unveil use hljs to generate pretty code snippet. Rust code can be played thanks to [the rust playground project](https://play.integer32.com/help).
@@ -135,7 +156,13 @@ Unveil use hljs to generate pretty code snippet. Rust code can be played thanks 
 
 ## Contributions
 
-Unveil is at a very early stage of it's development and any help is welcome. 
+Unveil is at a very early stage of it's development and any help is welcome. If you want to participate read the 
+[contributing guidelines](CONTRIBUTING.MD) and pick an [issue](https://github.com/oknozor/unveil-rs/issues)! 
+
+## Getting Help 
+
+Need help ? You can contact us via our [matrix channel](https://riot.im/app/#/room/#unveil-rs:matrix.org) or ask a question
+on the [issue tracker](https://github.com/oknozor/unveil-rs/issues).
 
 
 

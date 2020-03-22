@@ -1,10 +1,4 @@
 name = "unveil demo"
 language = "EN"
+slides = ["01_landing.md", "02_hljs.md", "03_ordering.md", "04_scss.md", "05_transitions.md", "06_md_extension.md", "07_contributing.md"]
 gitignore = true
-slides = ["landing.md",
- "slide.md",
- "slide-ordering.md",
- "scss.md",
- "markdown-ext.md",
- "contributing.md"
-]

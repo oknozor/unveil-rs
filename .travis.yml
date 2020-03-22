@@ -1,18 +1,91 @@
 ---
 language: rust
-rust: stable
+
+matrix:
+  include:
+    # Stable channel.
+    - os: linux
+      rust: stable
+      env: TARGET=x86_64-unknown-linux-gnu
+
+    - os: osx
+      rust: stable
+      env: TARGET=x86_64-apple-darwin
+
+    # Minimum Rust supported channel.
+    - os: linux
+      rust: 1.40.0
+      env: TARGET=x86_64-unknown-linux-gnu
+
+    - os: osx
+      rust: 1.40.0
+      env: TARGET=x86_64-apple-darwin
+
+sudo: required
+
+before_install:
+  - ci/before_install.sh
+
+env:
+  global:
+    # Default target on travis-ci.
+    # Used as conditional check in the install stage
+    - HOST=x86_64-unknown-linux-gnu
+    - PROJECT_NAME=unveil
+
+install:
+  # prevent target re-add error from rustup
+  - if [[ $TRAVIS_OS_NAME = linux && $HOST != $TARGET ]]; then rustup target add $TARGET; fi
+
 
 script:
-  - cargo build --verbose --all
-  - cargo test --verbose --all
-  - cargo install --path .
-  - cd demo && unveil build
+  - ci/build.sh
 
 deploy:
-  provider: pages
-  skip-cleanup: true
-  github-token: $GITHUB_TOKEN
-  local-dir: demo/public
-  keep-history: false
-  on:
-    branch: master
+  - provider: releases
+    api_key: $GITHUB_TOKEN
+    # for uploading multiple files
+    file_glob: true
+    # NOTE explanation on each env variable
+    # - PROJECT_NAME: name of the project, set on the `env.global` above
+    # - TRAVIS_TAG: tag name that the build is being deployed for, usually the version number
+    # - TARGET: target triple of the build
+    file:
+      - $PROJECT_NAME-$TRAVIS_TAG-$TARGET.*
+      - $PROJECT_NAME*.deb
+    # don't delete artifacts from previous stage
+    skip_cleanup: true
+    before_script: ci/before_deploy.sh
+
+    on:
+      # deploy only if we push a tag
+      tags: true
+      # deploy only on stable channel that has TARGET env variable sets
+      condition: $TRAVIS_RUST_VERSION = stable && $TARGET != ""
+
+  - provider: pages
+    before_script: ci/build_pages.sh
+    after_script: ci/clean_pages.sh
+    skip_cleanup: true
+    github_token: $GITHUB_TOKEN
+    local_dir: demo/public
+    keep_history: false
+    on:
+      # deploy only if we push a tag
+      tags: true
+      # deploy to github pages only once when targeting x86_64-unknown-linux-gnu
+      condition: $TRAVIS_RUST_VERSION = stable && $TARGET == $HOST
+
+  - provider: cargo
+    before_script: ci/before_publish.sh
+    skip_cleanup: true
+    token: $CARGO_TOKEN
+    on:
+      # deploy only if we push a tag
+      tags: true
+      # publish on crates.io only once when targeting x86_64-unknown-linux-gnu
+      condition: $TRAVIS_RUST_VERSION = stable && $TARGET == $HOST
+
+notifications:
+  email:
+    on_success: never
