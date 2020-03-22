@@ -13,9 +13,11 @@ impl Preprocessor {
         for (start, part) in html.match_indices(RUST_CODE_TAG) {
             let code_block_id = format!("rust-code-block-{}", count);
             let button = html! {
-                div(class="btn-code") {
-                    i(class="fas fa-copy bounce-in btn-copy", id=&code_block_id);
-                    i(class="fas fa-play btn-playpen", onclick="play_playpen(this.id)", id=&code_block_id);
+                div(class="btn-code-container") {
+                    div(class="btn-code") {
+                        i(class="fas fa-copy bounce-in btn-copy", id=&code_block_id);
+                        i(class="fas fa-play btn-playpen", onclick="play_playpen(this.id)", id=&code_block_id);
+                    }
                 }
             };
             let insert = format!("{}{}", button.to_string(), RUST_CODE_TAG);

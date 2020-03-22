@@ -64,14 +64,20 @@ li > code.hljs, p > code.hljs {
     right: 0;
 }
 
+.btn-code-container {
+    position: relative;
+    width: 100%;
+}
+
 .btn-code {
-    top: 0;
-    margin-top: 0.2rem;
-    margin-left: 93%;
+    position: absolute;
+    right: 0.4rem;
 }
 
 .btn-code > i {
-    margin-left: 0.5em;
+    margin-left: 0.7em;
+    font-size: 0.4rem;
+    color: #606060
 }
 
 /* https://github.com/IanLunn/Hover/blob/master/css/hover.css */
