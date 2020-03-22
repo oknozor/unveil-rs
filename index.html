@@ -1,0 +1,76 @@
+<!DOCTYPE html><html lang="EN"><head><meta charset="utf8"><title>Unveil</title><link rel="stylesheet" href="unveil.css"><link rel="stylesheet" href="user_css.css"><link rel="stylesheet" href="highlight.css"><link rel="stylesheet" href="fontawesome/css/fontawesome.css"></head><body><div onclick="next_slide_right()" class="arrow-right bounce-in"><i class="fas fa-chevron-right"></i></div><div onclick="next_slide_left()" class="arrow-left bounce-in"><i class="fas fa-chevron-left"></i></div><section id="unveil-slide-0"><article><h1>Unveil-rs</h1>
+<p>The Markdown presentation framework. </p>
+<h2>Getting started</h2>
+<ol>
+<li>Init with <code>unveil init</code></li>
+<li>Build with <code>unveil build</code></li>
+<li>Serve with <code>unveil serve</code></li>
+<li>Add more slides with <code>unveil add {slide_name}</code></li>
+</ol>
+</article></section><section id="unveil-slide-1"><article><h1>Display your code</h1>
+<pre><div class="btn-code"><i class="fas fa-copy bounce-in btn-copy" id="rust-code-block-0"></i><i class="fas fa-play btn-playpen" onclick="play_playpen(this.id)" id="rust-code-block-0"></i></div><code class="language-rust">fn main() {
+    println!(&quot;hello rustaceans 🦀!&quot;);
+}
+</code></pre>
+<p>Unveil display your code with <a href="https://highlightjs.org/">highlight.js</a>. 
+If you want some custom flavor can easily tweak <code>hilight.css</code>. </p>
+<p>You can also run your rust snippet thanks to <a href="https://play.integer32.com/help">The Rust Playground</a>.</p>
+</article></section><section id="unveil-slide-2"><article><h1>Slide ordering</h1>
+<p>To reorder your slides change their order in <code>unveil.toml</code> at the root of your project.</p>
+<pre><code class="language-toml">name = &quot;unveil demo&quot;
+language = &quot;EN&quot;
+slides = [
+    &quot;landing.md&quot;, # first slide
+    &quot;slide.md&quot;, # second slide
+    &quot;slide-ordering.md&quot;, # and so on ... 
+    &quot;scss.md&quot;, 
+    &quot;fontawesome.md&quot;,
+    &quot;contributing.md&quot;, 
+]
+</code></pre>
+</article></section><section id="unveil-slide-3"><article><h1>Easy styling with sass stylematters</h1>
+<p>Change your slides style with the stylematter block.</p>
+<p>This is the actual code of this page : </p>
+<pre><code class="language-markdown">+++
+background-color: #4c566a;
+color: #eceff4;  
+
+h1 {
+    color: #8fbcbb;
+}
++++
+
+# Easy styling with sass
+
+Change your slides style with the stylematters block.
+
+This is the actual code of this page : 
+</code></pre>
+</article></section><section id="unveil-slide-4"><article><h1>Transition animations</h1>
+<p>Unveil comes with a set of custom CSS properties. </p>
+<p>For example you can add a transition to your slide by adding the following to the
+stylematter : </p>
+<pre><code>+++
+--on-enter-animation: zoom-in
++++
+
+# I will Zoom in on enter !
+</code></pre>
+<p>Refer to unveil's <a href="https://github.com/oknozor/unveil-rs#custom-css-properties">README</a> to get the full list of available transitions. </p>
+</article></section><section id="unveil-slide-5"><article><h1>Markdown extension</h1>
+<p>Unveil add a single feature to the markdown spec. You can add a class to a markdown
+element with the <code>[class=\&quot;my-class\&quot;]</code> attribute.</p>
+<h2>Example :</h2>
+<pre><code class="language-markdown">[[class=\&quot;fab fa-github fa-2x\&quot;]](https://github.com/oknozor/unveil-rs)
+</code></pre>
+<p>This line (with no escaping on double quotes) would produce the following link :
+<a href="https://github.com/oknozor/unveil-rs" class="fab fa-github fa-2x"></a>. </p>
+<p>You can combine this with stylematter to change edit a slide styling.</p>
+</article></section><section id="unveil-slide-6"><article><h1>Contributing</h1>
+<p>Unveil is at a very early stage and all contribution are welcome. 
+If you want to help please visit us on and pick and issue or contact me on twitter.</p>
+<p class="social-links">
+<a href="https://github.com/oknozor/unveil-rs" class="fab fa-github fa-2x"></a>
+<a href="https://twitter.com/AfkTartine" class="fab fa-twitter fa-2x"></a>
+<a href="https://riot.im/app/#/room/#unveil-rs:matrix.org" class="fas fa-comments fa-2x"></a></p>
+</article></section><script src="highlight.js"></script><script src="clipboard.js"></script><script src="unveil.js"></script><script src="livereload.js"></script></body></html>

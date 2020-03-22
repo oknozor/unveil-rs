@@ -1,0 +1,24 @@
+#unveil-slide-3 {
+  background-color: #4c566a;
+  color: #eceff4; }
+  #unveil-slide-3 h1 {
+    color: #8fbcbb; }
+
+#unveil-slide-4 {
+  --on-enter-animation: zoom-in
+ ; }
+
+#unveil-slide-5 {
+  --on-enter-animation: fade-in
+ ; }
+
+#unveil-slide-6 .social-links {
+  justify-content: center;
+  display: flex; }
+
+#unveil-slide-6 .social-links a, #unveil-slide-6 .social-links a:visited {
+  color: black;
+  margin: 0.5em; }
+
+#unveil-slide-6 .social-links a.fa-twitter, #unveil-slide-6 .social-links a.fa-twitter:visited {
+  color: #1da1f2; }

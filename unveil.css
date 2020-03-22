@@ -1,0 +1,128 @@
+html {
+    background-color: white;
+    font-size: xx-large;
+    margin: 0;
+    overflow: hidden;
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-items: center;
+}
+
+section {
+    display: flex;
+    flex: 0 0 auto;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+}
+
+article {
+    margin-top: 5%;
+    width: 75%;
+}
+
+article h1 {
+    font-size: 2.5rem;
+}
+
+article h2 {
+    margin-left: 0.5em;
+}
+
+p, ul, ol {
+    margin-left: 1em;
+}
+
+article {
+    justify-content: center;
+    align-items: center;
+}
+
+li > code.hljs, p > code.hljs {
+    display: inline;
+    padding: 2px;
+}
+
+.arrow-left, .arrow-right {
+    margin: 1em;
+    width: 35px;
+    position: fixed;
+    top: 50%;
+}
+
+.arrow-left {
+    left: 0;
+}
+
+.arrow-right {
+    right: 0;
+}
+
+.btn-code {
+    top: 0;
+    margin-top: 0.2rem;
+    margin-left: 93%;
+}
+
+.btn-code > i {
+    margin-left: 0.5em;
+}
+
+/* https://github.com/IanLunn/Hover/blob/master/css/hover.css */
+/* Bounce In */
+.bounce-in {
+    display: inline-block;
+    vertical-align: middle;
+    -webkit-transform: perspective(1px) translateZ(0);
+    transform: perspective(1px) translateZ(0);
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+    -webkit-transition-duration: 0.5s;
+    transition-duration: 0.5s;
+}
+
+.bounce-in-active {
+    -webkit-transform: scale(1.2);
+    transform: scale(1.2);
+    -webkit-transition-timing-function: cubic-bezier(0.47, 2.02, 0.31, -0.36);
+    transition-timing-function: cubic-bezier(0.47, 2.02, 0.31, -0.36);
+}
+
+section {
+    transition: all .3s cubic-bezier(.22, .5, .17, .65);
+}
+
+.zoom-in {
+    animation: zoomin;
+    animation-duration: 0.7s;
+    animation-timing-function: cubic-bezier(.27,.52,.72,.93);
+}
+
+.fade-in {
+    animation: fadein;
+    animation-duration: 1s;
+    animation-timing-function: cubic-bezier(.22, .5, .17, .65);
+}
+
+@keyframes zoomin {
+    0% { transform: scale(1.5); }
+    100% { transform: scale(1.0); }
+}
+
+@keyframes fadein {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+
+
+
+
+
+
+
