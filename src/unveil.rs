@@ -72,7 +72,7 @@ impl UnveilProject {
     }
 
     /// Build a assets file from the markdown content located in `slides/`
-    pub fn build(&mut self) -> Result<()> {
+    pub fn build(&mut self, server: &Server) -> Result<()> {
         // Generate html from markdown files in
         let markdowns = UnveilProject::get_markdown_from_file()?;
         let mut processor = HtmlBuilder::new(markdowns, self.livereload);
@@ -101,6 +101,15 @@ impl UnveilProject {
 
         helper::fs::write_file("public/highlight.css", HIGHLIGHT_CSS)?;
         helper::fs::write_file("public/livereload.js", LIVERELOAD_JS)?;
+
+        // Replace livereload.js in case changes were made to the ws host and port
+        let livereload = format!(r#"let socket = new WebSocket("ws://{}:{}");{}"#,
+            server.hostname,
+            server.ws_port,
+            String::from_utf8(LIVERELOAD_JS.to_vec()).unwrap()
+        );
+        helper::fs::replace("public/livereload.js", livereload.as_bytes())?;
+
         helper::fs::write_file("public/clipboard.js", CLIPBOARD_JS)?;
         helper::fs::write_file("public/highlight.js", HIGHLIGHT_JS)?;
 
@@ -245,15 +254,16 @@ impl UnveilProject {
 
     pub fn serve(
         &mut self,
-        port: Option<i32>,
+        hostname: Option<&str>,
+        http_port: Option<i32>,
+        ws_port: Option<i32>,
     ) -> Result<()> {
-        let mut server = Server::default();
+        let server = Server::default()
+            .with_hostname(hostname)
+            .with_http_port(http_port)
+            .with_ws_port(ws_port);
 
-        if let Some(port) = port {
-            server.with_port(port)
-        }
-
-        self.build()?;
+        self.build(&server)?;
 
         server.serve()
     }
