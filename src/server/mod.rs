@@ -17,9 +17,9 @@ use std::{ffi::OsStr, fs, path::PathBuf};
 mod watcher;
 
 pub struct Server {
-    http_port: i32,
-    ws_port: i32,
-    address: String,
+    pub(crate) http_port: i32,
+    pub(crate) ws_port: i32,
+    pub(crate) hostname: String,
     public_dir: PathBuf,
     slide_dir: PathBuf,
 }
@@ -29,7 +29,7 @@ impl Default for Server {
         Server {
             http_port: 7878,
             ws_port: 3000,
-            address: "localhost".to_string(),
+            hostname: "localhost".to_string(),
             public_dir: PathBuf::from("public"),
             slide_dir: PathBuf::from("slides"),
         }
@@ -38,8 +38,8 @@ impl Default for Server {
 
 impl Server {
     pub fn serve(&self) -> Result<()> {
-        let address = format!("{}:{}", self.address, self.http_port);
-        let ws_adress = format!("{}:{}", self.address, self.ws_port);
+        let address = format!("{}:{}", self.hostname, self.http_port);
+        let ws_adress = format!("{}:{}", self.hostname, self.ws_port);
 
         let mut chain = Chain::new(staticfile::Static::new(&self.public_dir));
         chain.link_after(NoCache);
@@ -76,7 +76,7 @@ impl Server {
             println!("Building presentation...");
 
             let mut project = UnveilProject::default();
-            let result = project.build();
+            let result = project.build(&self);
 
             if let Err(e) = result {
                 eprintln!("Unable to load the presentation : {}", e);
@@ -88,11 +88,34 @@ impl Server {
         Ok(())
     }
 
-    pub fn with_port(
-        &mut self,
-        port: i32,
-    ) {
-        self.http_port = port;
+    pub fn with_http_port(
+        mut self,
+        port: Option<i32>,
+    ) -> Server {
+        if let Some(port) = port {
+            self.http_port = port;
+        }
+        self
+    }
+
+    pub fn with_ws_port(
+        mut self,
+        port: Option<i32>,
+    ) -> Server {
+        if let Some(port) = port {
+            self.ws_port = port;
+        }
+        self
+    }
+
+    pub fn with_hostname(
+        mut self,
+        hostname: Option<&str>,
+    ) -> Server {
+        if let Some(hostname) = hostname {
+            self.hostname = hostname.to_owned();
+        }
+        self
     }
 }
 
