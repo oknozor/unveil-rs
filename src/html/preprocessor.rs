@@ -77,9 +77,11 @@ pub mod test {
         let output = Preprocessor::insert_playpen_button(&input);
 
         let expected = html! {
-                div(class="btn-code") {
-                    i(class="fas fa-copy bounce-in btn-copy", id="rust-code-block-0");
-                    i(class="fas fa-play btn-playpen", onclick="play_playpen(this.id)", id="rust-code-block-0");
+                div(class="btn-code-container") {
+                    div(class="btn-code") {
+                        i(class="fas fa-copy bounce-in btn-copy", id="rust-code-block-0");
+                        i(class="fas fa-play btn-playpen", onclick="play_playpen(this.id)", id="rust-code-block-0");
+                    }
                 }
                 code(class="language-rust") {
                     : "let a = 1;";
@@ -99,17 +101,21 @@ pub mod test {
         let output = Preprocessor::insert_playpen_button(&input);
 
         let expected = html! {
-                div(class="btn-code") {
-                    i(class="fas fa-copy bounce-in btn-copy", id="rust-code-block-0");
-                    i(class="fas fa-play btn-playpen", onclick="play_playpen(this.id)", id="rust-code-block-0");
+                div(class="btn-code-container") {
+                    div(class="btn-code") {
+                        i(class="fas fa-copy bounce-in btn-copy", id="rust-code-block-0");
+                        i(class="fas fa-play btn-playpen", onclick="play_playpen(this.id)", id="rust-code-block-0");
+                    }
                 }
                 code(class="language-rust") {
                     : "let a = 1;";
                 }
                 p { : "Foo"}
-                div(class="btn-code") {
-                    i(class="fas fa-copy bounce-in btn-copy", id="rust-code-block-1");
-                    i(class="fas fa-play btn-playpen", onclick="play_playpen(this.id)", id="rust-code-block-1");
+                div(class="btn-code-container") {
+                    div(class="btn-code") {
+                        i(class="fas fa-copy bounce-in btn-copy", id="rust-code-block-1");
+                        i(class="fas fa-play btn-playpen", onclick="play_playpen(this.id)", id="rust-code-block-1");
+                    }
                 }
                 code(class="language-rust") {
                     : "let a = 1;";
