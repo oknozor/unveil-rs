@@ -86,12 +86,21 @@ const timeout = (promise) => {
 const play_playpen = (id) => {
     let play_button = window.document.getElementById(id);
     let result = play_button.querySelector('.result');
-    let code_block = play_button.parentElement.parentElement.querySelector('code');
+
+    const pre_block = play_button
+        .parentElement
+        .parentElement
+        .parentElement;
+
+    let code_block = pre_block.querySelector('code');
 
     if (!result) {
+        let result_container = document.createElement('pre');
         result = document.createElement('code');
         result.className = 'result hljs language-bash';
-        code_block.append(result);
+        result.innerText = "Running...";
+        result_container.append(result);
+        pre_block.append(result_container);
     }
 
     let code_text = code_block.textContent;
