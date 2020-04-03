@@ -22,7 +22,7 @@ the file system. Issues related to these topics have the [Rust tag](https://gith
 2. The Javascript and CSS part, which are the default generated assets for the static presentation site. Those files are
 located in the [src/assets](https://github.com/oknozor/unveil-rs/tree/master/src/assets) directory. If you are going to 
 participate on this topic you must be aware that the index.html file is generated in by the Rust code using the 
-[horrorshow crate](https://docs.rs/horrorshow/0.8.2/horrorshow/). Issues related to this have either the
+[horrorshow crate](https://docs.rs/horrorshow/). Issues related to this have either the
  [JS](https://github.com/oknozor/unveil-rs/issues?q=is%3Aissue+is%3Aopen+label%3AJS+)
 or the [CSS](https://github.com/oknozor/unveil-rs/issues?q=is%3Aissue+is%3Aopen+label%3ACSS) or both.
 
