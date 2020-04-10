@@ -187,6 +187,11 @@ impl UnveilProject {
             css.write_all(CSS)?;
         }
 
+        // get user theme or the default one
+        let mut theme = File::create("public/theme.css")?;
+        let theme_content = config.get_theme()?;
+        theme.write_all(theme_content.as_slice())?;
+
         Ok(())
     }
 

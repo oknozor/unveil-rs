@@ -74,6 +74,7 @@ impl HtmlBuilder {
 
         Ok((css, format!("{}", html)))
     }
+
     fn split_slylematters(slide_content: &str) -> (Option<String>, String) {
         // No stylematters : return the content as it is
         if !PAGE_RE.is_match(slide_content) {

@@ -1,5 +1,7 @@
 pub static HIGHLIGHT_JS: &[u8] = include_bytes!("highlight.js");
 pub static HIGHLIGHT_CSS: &[u8] = include_bytes!("highlight.css");
+pub static CSS_THEME: &[u8] = include_bytes!("theme.css");
+pub static CSS_DARK_THEME: &[u8] = include_bytes!("dark_theme.css");
 pub static CSS: &[u8] = include_bytes!("unveil.css");
 pub static JS: &[u8] = include_bytes!("unveil.js");
 pub static LIVERELOAD_JS: &[u8] = include_bytes!("livereload.js");
