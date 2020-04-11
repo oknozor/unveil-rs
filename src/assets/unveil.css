@@ -1,9 +1,20 @@
+@import "theme.css";
+
 html {
-    background-color: white;
+    background-color: var(--background-color);
+    color: var(--font-color);
     font-size: xx-large;
     margin: 0;
     overflow: hidden;
     height: 100%;
+}
+
+a, a:visited {
+    color: var(--link-color);
+}
+
+a:hover {
+    color: cornflowerblue;
 }
 
 body {
@@ -25,6 +36,8 @@ section {
 article {
     margin-top: 5%;
     width: 75%;
+    justify-content: center;
+    align-items: center;
 }
 
 article h1 {
@@ -39,9 +52,10 @@ p, ul, ol {
     margin-left: 1em;
 }
 
-article {
-    justify-content: center;
-    align-items: center;
+blockquote {
+    max-width: 55%;
+    background-color: var(--quote-background);
+    font-style: var(--quote-font-style);
 }
 
 li > code.hljs, p > code.hljs {
@@ -124,11 +138,3 @@ section {
     0% { opacity: 0; }
     100% { opacity: 1; }
 }
-
-
-
-
-
-
-
-

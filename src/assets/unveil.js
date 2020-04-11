@@ -60,7 +60,6 @@ const transition_and_scroll = (current_slide, target_slide) => {
     if (transition_kind) {
         // Second handler the new slide has finished transitioning
         const target_animation_end_handler = () => {
-            console.log('target end');
             // clean up
             target_slide.removeEventListener('animationend', target_animation_end_handler);
             target_slide.classList.remove(transition_kind);
