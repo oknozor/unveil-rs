@@ -134,8 +134,8 @@ For example you can add transition on slides using the `--on-enter-animation` CS
 #### Available custom CSS properties
 
 | name                  |   allowed values                    | status       |  
-| :---                  | :---                                |  implemented |
-|`--on-enter-animation` | `fade-in`, `zoom-in`
+| :---                  | :---                                |  :---        |
+|`--on-enter-animation` | `fade-in`, `zoom-in`                | implemented  |
 
 If you want to see more custom properties and transitions in unveil, please let us know ! 
 
