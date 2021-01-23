@@ -212,7 +212,7 @@ impl UnveilProject {
 
         // Add default gitignore
         let mut gitignore = File::create(&format!("{}/.gitignore", project_name))?;
-        gitignore.write_all(b"pubic")?;
+        gitignore.write_all(b"public")?;
 
         // Add a default example slides
         let mut landing = File::create(&format!("{}/slides/landing.md", project_name))?;
