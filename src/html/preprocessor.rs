@@ -1,3 +1,5 @@
+use horrorshow::html;
+
 pub(crate) struct Preprocessor;
 
 const RUST_CODE_TAG: &str = r#"<code class="language-rust">"#;
@@ -8,9 +10,8 @@ impl Preprocessor {
     pub fn insert_playpen_button(html: &str) -> String {
         let mut result = String::new();
         let mut last_end = 0;
-        let mut count = 0;
 
-        for (start, part) in html.match_indices(RUST_CODE_TAG) {
+        for (count, (start, part)) in html.match_indices(RUST_CODE_TAG).enumerate() {
             let code_block_id = format!("rust-code-block-{}", count);
             let button = html! {
                 div(class="btn-code-container") {
@@ -20,12 +21,11 @@ impl Preprocessor {
                     }
                 }
             };
-            let insert = format!("{}{}", button.to_string(), RUST_CODE_TAG);
+            let insert = format!("{}{}", button, RUST_CODE_TAG);
 
             result.push_str(&html[last_end..start]);
             result.push_str(&insert);
             last_end = start + part.len();
-            count += 1;
         }
         result.push_str(&html[last_end..html.len()]);
         result

@@ -1,14 +1,19 @@
-use notify::{Config, RecommendedWatcher, Watcher};
-use std::{path::PathBuf, sync::mpsc::channel};
-use std::collections::HashSet;
-use std::path::Path;
-use notify::EventKind::{Create, Modify, Remove};
+use notify::{
+    Config,
+    EventKind::{Create, Modify, Remove},
+    RecommendedWatcher, Watcher,
+};
+use std::{
+    collections::HashSet,
+    path::{Path, PathBuf},
+    sync::mpsc::channel,
+};
 
 pub fn trigger_on_change<F>(closure: F)
-    where
-        F: Fn(&HashSet<PathBuf>),
+where
+    F: Fn(&HashSet<PathBuf>),
 {
-    use notify::{RecursiveMode::*};
+    use notify::RecursiveMode::*;
 
     // Create a channel to receive the events.
     let (tx, rx) = channel();

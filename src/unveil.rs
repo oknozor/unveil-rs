@@ -1,4 +1,4 @@
-use anyhow::Result;
+use anyhow::{anyhow, Result};
 use std::{
     fs,
     fs::{File, OpenOptions},
@@ -13,23 +13,11 @@ use crate::{
 
 use crate::{
     assets::{
-        CLIPBOARD_JS,
-        FONT_AWESOME,
-        FONT_AWESOME_EOT,
-        FONT_AWESOME_EOT_900,
-        FONT_AWESOME_EOT_BRANDS,
-        FONT_AWESOME_SVG,
-        FONT_AWESOME_SVG_900,
-        FONT_AWESOME_SVG_BRANDS,
-        FONT_AWESOME_TTF,
-        FONT_AWESOME_TTF_900,
-        FONT_AWESOME_TTF_BRANDS,
-        FONT_AWESOME_WOFF,
-        FONT_AWESOME_WOFF2,
-        FONT_AWESOME_WOFF2_900,
-        FONT_AWESOME_WOFF2_BRANDS,
-        FONT_AWESOME_WOFF_900,
-        FONT_AWESOME_WOFF_BRANDS,
+        CLIPBOARD_JS, FONT_AWESOME, FONT_AWESOME_EOT, FONT_AWESOME_EOT_900,
+        FONT_AWESOME_EOT_BRANDS, FONT_AWESOME_SVG, FONT_AWESOME_SVG_900, FONT_AWESOME_SVG_BRANDS,
+        FONT_AWESOME_TTF, FONT_AWESOME_TTF_900, FONT_AWESOME_TTF_BRANDS, FONT_AWESOME_WOFF,
+        FONT_AWESOME_WOFF2, FONT_AWESOME_WOFF2_900, FONT_AWESOME_WOFF2_BRANDS,
+        FONT_AWESOME_WOFF_900, FONT_AWESOME_WOFF_BRANDS,
     },
     html::HtmlBuilder,
     server::Server,
@@ -89,7 +77,7 @@ impl UnveilProject {
         }
 
         if !public.exists() {
-            std::fs::create_dir("public")?;
+            fs::create_dir("public")?;
         }
 
         helper::fs::replace("public/index.html", html.as_bytes())?;
@@ -103,7 +91,8 @@ impl UnveilProject {
         helper::fs::write_file("public/livereload.js", LIVERELOAD_JS)?;
 
         // Replace livereload.js in case changes were made to the ws host and port
-        let livereload = format!(r#"let socket = new WebSocket("ws://{}:{}");{}"#,
+        let livereload = format!(
+            r#"let socket = new WebSocket("ws://{}:{}");{}"#,
             server.hostname,
             server.ws_port,
             String::from_utf8(LIVERELOAD_JS.to_vec()).unwrap()
@@ -196,10 +185,7 @@ impl UnveilProject {
     }
 
     /// Initialize a template project
-    pub fn init(
-        &mut self,
-        project_name: Option<&str>,
-    ) -> Result<()> {
+    pub fn init(&mut self, project_name: Option<&str>) -> Result<()> {
         let project_name = if let Some(project_name) = project_name {
             project_name
         } else {
@@ -207,19 +193,19 @@ impl UnveilProject {
         };
 
         // Create slides dir
-        std::fs::create_dir(project_name)?;
-        std::fs::create_dir(&format!("{}/slides", project_name))?;
+        fs::create_dir(project_name)?;
+        fs::create_dir(format!("{}/slides", project_name))?;
 
         // Add default gitignore
-        let mut gitignore = File::create(&format!("{}/.gitignore", project_name))?;
+        let mut gitignore = File::create(format!("{}/.gitignore", project_name))?;
         gitignore.write_all(b"public")?;
 
         // Add a default example slides
-        let mut landing = File::create(&format!("{}/slides/landing.md", project_name))?;
+        let mut landing = File::create(format!("{}/slides/landing.md", project_name))?;
         landing.write_all(LANDING)?;
 
         // Generate default config
-        let mut config_file = File::create(&format!("{}/unveil.toml", project_name))?;
+        let mut config_file = File::create(format!("{}/unveil.toml", project_name))?;
         let default_config = toml::to_string(&UnveilConfig::default())?;
         config_file.write_all(default_config.as_bytes())?;
 
@@ -231,10 +217,7 @@ impl UnveilProject {
             .map_err(|err| anyhow!("Unable to remove public directory : {}", err))
     }
 
-    pub fn new_slide(
-        &mut self,
-        name: &str,
-    ) -> Result<()> {
+    pub fn new_slide(&mut self, name: &str) -> Result<()> {
         let filename = if name.ends_with(".md") {
             name.into()
         } else {
@@ -257,7 +240,7 @@ impl UnveilProject {
             .map_err(|err| anyhow!("Error writing to unveil.toml : {}", err))
     }
 
-    pub fn serve(
+    pub async fn serve(
         &mut self,
         hostname: Option<&str>,
         http_port: Option<i32>,
@@ -270,6 +253,6 @@ impl UnveilProject {
 
         self.build(&server)?;
 
-        server.serve()
+        server.serve().await
     }
 }

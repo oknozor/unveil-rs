@@ -1,6 +1,7 @@
 use crate::html::preprocessor::Preprocessor;
-use anyhow::Result;
-use horrorshow::{helper::doctype, prelude::*};
+use anyhow::{anyhow, Result};
+use horrorshow::{helper::doctype, html, prelude::*};
+use once_cell::sync::Lazy;
 use pulldown_cmark::{html, Options, Parser};
 use regex::Regex;
 use sass_rs::Options as SassOption;
@@ -8,10 +9,9 @@ use sass_rs::Options as SassOption;
 mod preprocessor;
 
 // from zola https://github.com/getzola/zola/blob/1972e58823417a58eb1cc646ee346e7c3b04addb/components/front_matter/src/lib.rs
-lazy_static! {
-    static ref PAGE_RE: Regex =
-        Regex::new(r"^[[:space:]]*\+\+\+\r?\n((?s).*?(?-s))\+\+\+\r?\n?((?s).*(?-s))$").unwrap();
-}
+static PAGE_RE: Lazy<Regex> = Lazy::new(|| {
+    Regex::new(r"^[[:space:]]*\+\+\+\r?\n((?s).*?(?-s))\+\+\+\r?\n?((?s).*(?-s))$").unwrap()
+});
 
 pub struct HtmlBuilder {
     pub html: String,
@@ -124,10 +124,7 @@ impl HtmlBuilder {
         self.html = html_ouput;
     }
 
-    pub fn new(
-        markdown: Vec<String>,
-        live_reload: bool,
-    ) -> Self {
+    pub fn new(markdown: Vec<String>, live_reload: bool) -> Self {
         HtmlBuilder {
             markdown,
             live_reload,

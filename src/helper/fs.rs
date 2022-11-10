@@ -1,10 +1,7 @@
-use anyhow::Result;
+use anyhow::{anyhow, Result};
 use std::{fs::File, io::Write, path::PathBuf};
 
-pub fn replace(
-    filename: &str,
-    content: &[u8],
-) -> Result<()> {
+pub fn replace(filename: &str, content: &[u8]) -> Result<()> {
     let file = PathBuf::from(filename);
 
     if file.exists() {
@@ -16,10 +13,7 @@ pub fn replace(
         .map_err(|err| anyhow!("Could not write to file {} : {}", filename, err))
 }
 
-pub fn write_file(
-    filename: &str,
-    content: &[u8],
-) -> Result<()> {
+pub fn write_file(filename: &str, content: &[u8]) -> Result<()> {
     let file = PathBuf::from(filename);
 
     if file.exists() {

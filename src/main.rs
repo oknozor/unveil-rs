@@ -1,8 +1,8 @@
-use clap::{App, Arg, SubCommand, AppSettings};
-use unveil_rs::unveil::UnveilProject;
-use unveil_rs::server::Server;
+use clap::{App, AppSettings, Arg, SubCommand};
+use unveil_rs::{server::Server, unveil::UnveilProject};
 
-fn main() {
+#[tokio::main]
+async fn main() {
     let matches = App::new("Unveil.rs")
         .version(env!("CARGO_PKG_VERSION"))
         .author("Paul D. <paul.delafosse@protonmail.com>")
@@ -17,8 +17,9 @@ fn main() {
             SubCommand::with_name("init")
                 .display_order(1)
                 .about("Initialise a presentation project in the current directory")
-                .arg(Arg::with_name("PROJECT_NAME")
-                    .help("The name of your project, default `unveil`")
+                .arg(
+                    Arg::with_name("PROJECT_NAME")
+                        .help("The name of your project, default `unveil`"),
                 ),
             SubCommand::with_name("build")
                 .display_order(2)
@@ -26,12 +27,13 @@ fn main() {
             SubCommand::with_name("serve")
                 .display_order(3)
                 .about("Serve your project with live-reload")
-                .args(&[Arg::with_name("host")
-                    .required(false)
-                    .long("hostname")
-                    .short("h")
-                    .takes_value(true)
-                    .help("Hostname to serve on, default `localhost`"),
+                .args(&[
+                    Arg::with_name("host")
+                        .required(false)
+                        .long("hostname")
+                        .short("h")
+                        .takes_value(true)
+                        .help("Hostname to serve on, default `localhost`"),
                     Arg::with_name("http-port")
                         .required(false)
                         .long("http-port")
@@ -43,7 +45,7 @@ fn main() {
                         .long("ws-port")
                         .short("w")
                         .takes_value(true)
-                        .help("Web socket port used for live-reload, default `3000`")
+                        .help("Web socket port used for live-reload, default `3000`"),
                 ]),
             SubCommand::with_name("add")
                 .display_order(4)
@@ -66,15 +68,18 @@ fn main() {
         }
         "build" => project.build(&Server::default()).unwrap(),
         "serve" => {
-            let serve = matches.subcommand_matches("serve")
-                .unwrap();
-            let http_port = serve.value_of("http-port")
+            let serve = matches.subcommand_matches("serve").unwrap();
+            let http_port = serve
+                .value_of("http-port")
                 .map(|value| value.parse::<i32>().expect("Error : invalid http port"));
-            let ws_port = serve.value_of("ws-port")
-                .map(|value| value.parse::<i32>().expect("Error : invalid websocket port"));
+            let ws_port = serve.value_of("ws-port").map(|value| {
+                value
+                    .parse::<i32>()
+                    .expect("Error : invalid websocket port")
+            });
             let hostname = serve.value_of("hostname");
 
-            project.serve(hostname, http_port, ws_port).unwrap()
+            project.serve(hostname, http_port, ws_port).await.unwrap()
         }
         "add" => {
             let slide_name = matches
@@ -86,6 +91,6 @@ fn main() {
             project.new_slide(slide_name).unwrap()
         }
         "clean" => UnveilProject::clean().unwrap(),
-        _ => ()
+        _ => (),
     }
 }

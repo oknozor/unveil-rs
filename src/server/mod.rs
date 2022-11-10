@@ -1,18 +1,12 @@
 use crate::unveil::UnveilProject;
 use anyhow::Result;
-use iron::{
-    headers,
-    status,
-    AfterMiddleware,
-    Chain,
-    Iron,
-    IronError,
-    IronResult,
-    Request,
-    Response,
-    Set,
+
+use std::{
+    ffi::OsStr,
+    fs,
+    net::{SocketAddr, ToSocketAddrs},
+    path::PathBuf,
 };
-use std::{ffi::OsStr, fs, path::PathBuf};
 
 mod watcher;
 
@@ -37,14 +31,21 @@ impl Default for Server {
 }
 
 impl Server {
-    pub fn serve(&self) -> Result<()> {
+    pub async fn serve(&self) -> Result<()> {
         let address = format!("{}:{}", self.hostname, self.http_port);
+        let address = *address
+            .to_socket_addrs()?
+            .collect::<Vec<SocketAddr>>()
+            .first()
+            .unwrap();
         let ws_adress = format!("{}:{}", self.hostname, self.ws_port);
+        let public_dir = self.public_dir.clone();
 
-        let mut chain = Chain::new(staticfile::Static::new(&self.public_dir));
-        chain.link_after(NoCache);
-        chain.link_after(ErrorRecover);
-        let _iron = Iron::new(chain).http(&*address)?;
+        tokio::spawn(async move {
+            warp::serve(warp::filters::fs::dir(public_dir))
+                .run(address)
+                .await;
+        });
 
         let ws_server = ws::WebSocket::new(|_| |_| Ok(()))?;
 
@@ -76,7 +77,7 @@ impl Server {
             println!("Building presentation...");
 
             let mut project = UnveilProject::default();
-            let result = project.build(&self);
+            let result = project.build(self);
 
             if let Err(e) = result {
                 eprintln!("Unable to load the presentation : {}", e);
@@ -88,67 +89,25 @@ impl Server {
         Ok(())
     }
 
-    pub fn with_http_port(
-        mut self,
-        port: Option<i32>,
-    ) -> Server {
+    pub fn with_http_port(mut self, port: Option<i32>) -> Server {
         if let Some(port) = port {
             self.http_port = port;
         }
         self
     }
 
-    pub fn with_ws_port(
-        mut self,
-        port: Option<i32>,
-    ) -> Server {
+    pub fn with_ws_port(mut self, port: Option<i32>) -> Server {
         if let Some(port) = port {
             self.ws_port = port;
         }
         self
     }
 
-    pub fn with_hostname(
-        mut self,
-        hostname: Option<&str>,
-    ) -> Server {
+    pub fn with_hostname(mut self, hostname: Option<&str>) -> Server {
         if let Some(hostname) = hostname {
             self.hostname = hostname.to_owned();
         }
         self
-    }
-}
-
-struct ErrorRecover;
-
-struct NoCache;
-
-impl AfterMiddleware for NoCache {
-    fn after(
-        &self,
-        _: &mut Request,
-        mut res: Response,
-    ) -> IronResult<Response> {
-        res.headers.set(headers::CacheControl(vec![
-            headers::CacheDirective::NoStore,
-            headers::CacheDirective::MaxAge(0u32),
-        ]));
-
-        Ok(res)
-    }
-}
-
-impl AfterMiddleware for ErrorRecover {
-    fn catch(
-        &self,
-        _: &mut Request,
-        err: IronError,
-    ) -> IronResult<Response> {
-        match err.response.status {
-            // each error will result in 404 response
-            Some(_) => Ok(err.response.set(status::NotFound)),
-            _ => Err(err),
-        }
     }
 }
 

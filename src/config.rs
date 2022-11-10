@@ -1,6 +1,7 @@
-use anyhow::{Error, Result};
-use std::{fs::File, io::Read, path::Path, str::FromStr};
 use crate::assets::{CSS_DARK_THEME, CSS_THEME};
+use anyhow::{Error, Result};
+use serde::{Deserialize, Serialize};
+use std::{fs::File, io::Read, path::Path, str::FromStr};
 
 #[derive(Serialize, Deserialize)]
 pub struct UnveilConfig {
@@ -8,7 +9,7 @@ pub struct UnveilConfig {
     language: String,
     pub slides: Vec<String>,
     pub gitignore: bool,
-    pub theme: String
+    pub theme: String,
 }
 
 impl Default for UnveilConfig {
@@ -18,7 +19,7 @@ impl Default for UnveilConfig {
             language: "EN".to_string(),
             slides: vec!["landing.md".into()],
             gitignore: true,
-            theme: "default".to_string()
+            theme: "default".to_string(),
         }
     }
 }
@@ -41,14 +42,14 @@ impl UnveilConfig {
     }
 
     pub fn get_theme(&self) -> Result<Vec<u8>> {
-            match self.theme.as_str() {
-                "default" => Ok(CSS_THEME.to_vec()),
-                "dark" => Ok(CSS_DARK_THEME.to_vec()),
-                custom_theme => {
-                    let content = std::fs::read_to_string(&format!("public/{}", custom_theme))?;
-                    let bytes = content.as_bytes().to_owned();
-                    Ok(bytes)
-                },
+        match self.theme.as_str() {
+            "default" => Ok(CSS_THEME.to_vec()),
+            "dark" => Ok(CSS_DARK_THEME.to_vec()),
+            custom_theme => {
+                let content = std::fs::read_to_string(format!("public/{}", custom_theme))?;
+                let bytes = content.as_bytes().to_owned();
+                Ok(bytes)
             }
+        }
     }
 }
