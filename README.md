@@ -22,7 +22,7 @@ At the moment unveil is only available on [crates.io](https://crates.io).
 To get started you will need to install rust and then type the following command in a terminal :
 
 ```shell script
-cargo install unveil-rs --version=0.1.2-alpha
+cargo install unveil-rs --version=0.1.2-alpha1
 ```
 
 Note : the `--version` flag is required while unveil version is still in alpha. 
