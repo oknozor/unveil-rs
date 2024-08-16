@@ -87,7 +87,7 @@ From this point you can start editing your markdown slides. The site will reload
 
 ### Add new slides
 
-To add a slide run `unveil new myslide` inside your project root directory. it will create a new markdown file 
+To add a slide run `unveil add myslide` inside your project root directory. it will create a new markdown file 
 `myslide.md` in the `slides/` directory and add a slide entry in the `unveil.toml` config file. 
 
 ```toml
